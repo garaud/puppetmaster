@@ -186,7 +186,7 @@ class NetworkTestCase(unittest.TestCase):
 
 # Processes the tests when you launch this python file.
 if __name__ == '__main__':
-    # Deletes the modules from 'ensemble_generation'.
+    # Deletes the modules 'network.py' and 'program_manager'.
     # You don't have to reload 'ipython' for each changement in a module.
     del sys.modules['network']
     del sys.modules['program_manager']
