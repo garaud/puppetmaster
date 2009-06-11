@@ -14,9 +14,9 @@
 # FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
 # details.
 
-"""\package ensemble_generation.polyphemus
+"""\package program_manager
 
-This module provides facilities to launch Polyphemus programs.
+This module provides facilities to launch several programs.
 """
 
 
@@ -27,13 +27,13 @@ except:
     Network = str
 
 
-##############
-# POLYPHEMUS #
-##############
+###################
+# PROGRAM_MANAGER #
+###################
 
 
-class Polyphemus:
-    """This class manages the execution of several Polyphemus programs.
+class ProgramManager:
+    """This class manages the execution of several programs.
     """
 
     
@@ -259,7 +259,7 @@ class Program:
         \param group the group index.
         """
         if config is not None:
-            ## A configuration file or a polyphemus.Configuration instance.
+            ## A configuration file or a program_manager.Configuration instance.
             self.config = config
         else:
             self.config = Configuration()
@@ -574,10 +574,10 @@ class Configuration:
 
 
 if __name__ == "__main__":
-    ## An instance 'polyphemus.Polyphemus'.
-    simulation = Polyphemus(Network())
+    ## An instance 'program_manager.ProgramManager'.
+    simulation = ProgramManager(Network())
 
-    ## An instance 'polyphemus.Program'.
+    ## An instance 'program_manager.ProgramManager'.
     program = Program("/bin/echo", format = " Hello World!")
     simulation.AddProgram(program)
 
