@@ -1,0 +1,59 @@
+README for cluster management.
+
+
+About
+----- 
+
+This directory contains 2 Python modules ('network.py' and
+'program_manager.py') which can be useful if you would like to launch several
+programs on remote hosts.
+
+
+------------
+Requirements
+------------
+
+These modules were written under Python version 2.5.
+
+1. You have to install the shell command 'dsh'. It can be downloaded in this
+   website: http://www.netfort.gr.jp/~dancer/software/downloads/list.cgi 
+   It can be execute multiple remote shell on remote hosts. 'man dsh' for
+   help.
+
+2. You must create these directories:
+   mkdir ~/.dsh
+   mkdir ~/.dsh/group
+
+3. You must write the names of hosts in a file.
+   For instance in ~/.dsh/group/all:
+   node001
+   node002
+   node003
+   node004
+
+4. You can test the following commands:
+      dsh -r ssh -Mc -g all 'echo `uptime`'
+   to get the 'uptime' for each host. Or
+      dsh -r ssh -Mc -g all 'cat /proc/cpuinfo | grep ^processor | wc -l'
+   to have the number of processors for each host.
+
+
+------------
+Installation
+------------
+
+Just copy or link the modules 'network.py' and 'program_manager.py' to a path
+which appears in your PYTHONPATH variable. You can launch 'python
+test/remote_hosts_test.py' to know if you do not have any access problem. You
+can try 'python test/tests.py' (it checks the modules 'network.py' and
+'program_manager.py')
+
+
+--------
+Contacts
+--------
+
+Damien Garaud: damien.garaud@inria.fr
+
+
+# Latest version: 11 June 2009
