@@ -1,21 +1,18 @@
 # Copyright (C) 2005-2009 INRIA
 # Authors: Vivien Mallet, Damien Garaud
 # 
-# This file is part of the air quality modeling system Polyphemus. It provides
-# facilities to deal with computations over a Linux network.
+# This file provides facilities to deal with computations over a Linux
+# network.
 # 
-# Polyphemus is free software; you can redistribute it and/or modify it under
-# the terms of the GNU General Public License as published by the Free
-# Software Foundation; either version 2 of the License, or (at your option)
-# any later version.
+# This script is free; you can redistribute it and/or modify it under the
+# terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
 #
-# Polyphemus is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-# more details.
-#
-# For more information, visit the Polyphemus web site:
-#      http://cerea.enpc.fr/polyphemus/
+# This is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
 
 """\package ensemble_generation.network
 

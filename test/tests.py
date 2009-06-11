@@ -1,21 +1,17 @@
 # Copyright (C) 2008-2009 EDF R&D
 # Author: Damien Garaud
-# 
-# This file is part of the air quality modeling system Polyphemus. It is used
-# to check ensemble generation.
-# 
-# Polyphemus is free software; you can redistribute it and/or modify it under
-# the terms of the GNU General Public License as published by the Free
-# Software Foundation; either version 2 of the License, or (at your option)
-# any later version.
 #
-# Polyphemus is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-# more details.
+# This file provides to check the module 'network' and 'program_manager'.
+# 
+# This script is free; you can redistribute it and/or modify it under the
+# terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
 #
-# For more information, visit the Polyphemus web site:
-#      http://cerea.enpc.fr/polyphemus/
+# This is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
 
 import os, sys
 import unittest
