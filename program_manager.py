@@ -99,6 +99,8 @@ class ProgramManager:
     def Run(self):
         """Executes the set of programs on localhost.
         """
+        if len(self.program_list) == 0:
+            raise Exception, "The program list is empty."
         for program in self.program_list:
             print "Program name: ", program.name.split("/")[-1]
             program.Run()
@@ -119,6 +121,8 @@ class ProgramManager:
         programs. Unit: seconds.
         """
         import time, commands
+        if len(self.program_list) == 0:
+            raise Exception, "The program list is empty."
         self.process = []
         host = []
         beg_time = []
