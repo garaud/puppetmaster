@@ -15,10 +15,10 @@ Requirements
 
 These modules were written under Python version 2.5.
 
-1. You have to install the shell command 'dsh'. It can be downloaded in this
+1. You have to install 'dsh'. It can be downloaded from this
    website: http://www.netfort.gr.jp/~dancer/software/downloads/list.cgi 
-   It can be execute multiple remote shell on remote hosts. 'man dsh' for
-   help.
+   It is an implementation of a wrapper for executing multiple remote shell
+   (rsh, remsh, ssh) commands. 'man dsh' for help.
 
 2. You must create these directories:
    mkdir ~/.dsh
@@ -31,7 +31,7 @@ These modules were written under Python version 2.5.
    node003
    node004
 
-4. You can test the following commands:
+4. You can test the following commands in a terminal:
       dsh -r ssh -Mc -g all 'echo `uptime`'
    to get the 'uptime' for each host. Or
       dsh -r ssh -Mc -g all 'cat /proc/cpuinfo | grep ^processor | wc -l'
@@ -42,13 +42,30 @@ These modules were written under Python version 2.5.
 Installation
 ------------
 
-Just copy or link the modules 'network.py' and 'program_manager.py' to a path
-which appears in your PYTHONPATH variable. You can launch 'python
-test/remote_hosts_test.py' to know if you do not have any access problem. You
-can try:
+Just move or link the modules 'network.py' and 'program_manager.py' to a path
+which appears in your PYTHONPATH variable (for instance '~/usr/lib/python').
+
+OR
+
+Add this directory to your PYTHONPATH variable.
+
+Then, you just do 'import network' and 'import program_manager' in a Python
+script.
+
+
+----
+Test
+----
+
+You can launch 'python remote_hosts_test.py' in the directory 'test' to know
+if you do not have any access problem. You can try too:
     cd test
     python tests.py
 It checks the modules 'network.py' and 'program_manager.py'.
+
+Moreover, you have a few scripts in 'example':
+    - program.py
+    - remote.py
 
 
 --------
@@ -58,4 +75,4 @@ Contacts
 Damien Garaud: damien.garaud@inria.fr
 
 
-# Latest version: 11 June 2009
+# Latest version: 15 June 2009
