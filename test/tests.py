@@ -21,6 +21,14 @@ import program_manager
 sys.path.pop(0)
 
 
+###################
+# GLOBAL VAIRABLE #
+###################
+
+configuration_file = '../example/example.cfg'
+configuration_file = os.path.abspath(configuration_file)
+
+
 #############
 # HOST TEST #
 #############
@@ -54,6 +62,7 @@ class HostTestCase(unittest.TestCase):
         self.assert_(not 9999 in load_average)
         load_avr_file = self.local_host.LoadAverageFile()
         self.assert_(os.path.isfile(load_avr_file))
+        os.remove(load_avr_file)
         # Launches a command.
         self.local_host.LaunchInt(self.command)
         self.local_host.LaunchInt(self.command)
@@ -180,6 +189,119 @@ class NetworkTestCase(unittest.TestCase):
         #                             'login@domain.com', self.message)
 
 
+###################
+# PROGRAM MANAGER #
+###################
+
+class ProgramManagerTestCase(unittest.TestCase):
+
+    def setUp(self):
+        count = 0
+        self.delay = 2.
+        self.program_manager = program_manager.ProgramManager()
+        self.program_list = ['/bin/ps', '/bin/ls', '/bin/pwd']
+        for p in self.program_list:
+            prg = program_manager.Program(name = p, group = count)
+            self.program_manager.AddProgram(prg)
+            count += 1
+    
+    def tearDown(self):
+        pass
+
+    def testInit(self):
+        ensemble_program = program_manager.ProgramManager()
+        # Raises an exception if the program list is empty.
+        self.assertRaises(Exception, ensemble_program.Run)
+        self.assertRaises(Exception, ensemble_program.RunNetwork)
+
+    def testAccessMethods(self):
+        log = self.program_manager.GetLog()
+        self.assert_(isinstance(log, str))
+
+    def testProcessingMethods(self):
+        self.program_manager.Try()
+        self.program_manager.Run()
+        self.program_manager.RunNetwork(self.delay)
+        self.program_manager.Clear()
+        self.assert_(len(self.program_manager.program_list) == 0)
+        
+
+class ProgramTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.command_name = '/bin/ls'
+        self.program = program_manager.Program(self.command_name)
+    
+    def tearDown(self):
+        pass
+
+    def testInit(self):
+        pass
+
+    def testAccessMethods(self):
+        command_name = self.program.Command()
+        self.assert_(isinstance(command_name, str))
+
+    def testProcessingMethods(self):
+        self.assert_(self.program.IsReady())
+        self.program.Try()
+        self.program.Run()
+
+
+class ConfigurationTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.config = program_manager.Configuration(configuration_file)
+        
+    def tearDown(self):
+        pass
+
+    def testInit(self):
+        pass
+
+    def testAccessMethods(self):
+        replacement = self.config.GetReplacementMap()
+
+    def testProcessingMethods(self):
+        import pwd, socket, time, platform
+        current_date = time.asctime()
+        username = pwd.getpwuid(os.getuid())[0]
+        computer = socket.gethostname()
+        tmp = platform.dist()
+        distribution = tmp[0] + '-' + tmp[1] + '_' + tmp[2]
+        replacement = {'%date%': current_date,
+                       '%username%': username,
+                       '%computer%': computer,
+                       '%distribution%': distribution}
+        # Mode 'random'.
+        self.config.SetMode('random')
+        self.config.SetReplacementMap(replacement)
+        self.config.Proceed()
+        self.assert_(self.config.IsReady())
+        # Removes the copy of the configuration file.
+        os.remove(self.config.file_list[-1])
+
+        # Mode 'random_path'.
+        self.config.SetMode('random_path')
+        self.config.SetReplacementMap(replacement)
+        self.config.Proceed()
+        self.assert_(self.config.IsReady())
+        # Removes the copy of the configuration file.
+        os.remove(self.config.file_list[-1])
+        os.removedirs(os.path.dirname(self.config.file_list[-1]))
+
+        # Mode 'raw'.
+        self.config.SetMode('raw')
+        self.config.SetPath('/tmp/')
+        self.config.SetReplacementMap(replacement)
+        self.config.Proceed()
+        self.assert_(self.config.IsReady())
+        # Removes the copy of the configuration file.
+        os.remove(self.config.file_list[-1])
+
+
+
+
 ##############
 # PROCESSING #
 ##############
@@ -200,7 +322,18 @@ if __name__ == '__main__':
     # Network tests.
     suite_net = unittest.TestLoader()\
         .loadTestsFromTestCase(NetworkTestCase)
-    suite = unittest.TestSuite([suite_host, suite_net])
+    # Program_manager tests.
+    suite_program_manager = unittest.TestLoader()\
+        .loadTestsFromTestCase(ProgramManagerTestCase)
+    # Program tests.
+    suite_program = unittest.TestLoader()\
+        .loadTestsFromTestCase(ProgramTestCase)
+    # Configuration tests.
+    suite_configuration = unittest.TestLoader()\
+        .loadTestsFromTestCase(ConfigurationTestCase)
+    # Tests suite.
+    suite = unittest.TestSuite([suite_host, suite_net, suite_program_manager,
+                                suite_program, suite_configuration])
     # Runs the tests.
     unittest.TextTestRunner(verbosity = 2).run(suite)
 
