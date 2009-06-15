@@ -14,7 +14,7 @@
 # FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
 # details.
 
-"""\package ensemble_generation.network
+"""\package network
 
 Provides class 'Network' designed to managed processes launched over the
 network.
