@@ -1,0 +1,23 @@
+# README for the documentation (by Doxygen 1.5.8).
+
+
+About
+-----
+
+The file 'Doxyfile' describes the settings to be used by the documentation
+system doxygen (www.doxygen.org) for this project.
+
+The file 'doxypy.py' is an input filter for Doxygen. It comes from
+http://code.foosel.org/doxypy
+and is licensed under the GPLv2.
+
+
+------------------------
+Documentation Generation
+------------------------
+
+To generate the documentation, just do:
+
+doxygen
+
+in this directory. Two directories will be created: 'html' and 'latex'.

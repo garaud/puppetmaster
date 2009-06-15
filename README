@@ -68,6 +68,15 @@ Moreover, you have a few scripts in 'example':
     - remote.py
 
 
+-------------
+Documentation
+-------------
+
+A soft description of each class and each method is available in the code. You
+can also generate the documentation with Doxygen in the directory 'doc'. Read
+'doc/REAMDE' to have more explanations.
+
+
 --------
 Contacts
 --------
