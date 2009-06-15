@@ -482,7 +482,7 @@ class Network:
         """Return an available host.
         
         \param load_limit the limit time to load.
-        @return an available host.
+        @return an available host or the host with the minimal load averages.
         """
         import time
         result = ""
@@ -493,7 +493,7 @@ class Network:
         if len(result) == 0:
             load_list = [x[1] for x in host_list]
             load_min = min(load_list)
-            result = host[load_list].index(load_min)
+            result = self.hosts[load_list.index(load_min)].name
         return result
             
 
