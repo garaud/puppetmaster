@@ -175,8 +175,8 @@ class ProgramManager:
                 count_host += 1
                 
             current_host = host_available[count_host][0]
-            print "Program: ", program.name.split("/")[-1], \
-                  " - Available host: ", current_host
+            print "Program: ", program.basename, \
+                " - Available host: ", current_host
             p = self.net.LaunchBG(program.Command(), host = current_host)
             self.process.append(p)
             count_program += 1
