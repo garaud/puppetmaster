@@ -15,7 +15,7 @@
 # details.
 
 import os, sys, pwd, socket, time, platform
-sys.path.insert(0, '../')
+sys.path.insert(0, '../src')
 import program_manager
 sys.path.pop(0)
 

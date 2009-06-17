@@ -4,9 +4,9 @@ README for PuppetMaster.
 About
 ----- 
 
-This directory contains 2 Python modules ('network.py' and
-'program_manager.py') which can be useful if you would like to launch several
-programs on remote hosts.
+This project contains 2 Python modules ('./src/network.py' and
+'./src/program_manager.py'). They can be useful if you would like to launch
+several programs on remote hosts.
 
 
 ------------
@@ -42,12 +42,13 @@ These modules were written under Python version 2.5.
 Installation
 ------------
 
-Just move or link the modules 'network.py' and 'program_manager.py' to a path
-which appears in your PYTHONPATH variable (for instance '~/usr/lib/python').
+Just move or link the modules './src/network.py' and
+'./src/program_manager.py' to a path which appears in your PYTHONPATH variable
+(for instance '~/usr/lib/python').
 
 OR
 
-Add this directory to your PYTHONPATH variable.
+Add '/path/to/puppetmaster/src/' to your PYTHONPATH variable.
 
 Then, you just do 'import network' and 'import program_manager' in a Python
 script.

@@ -16,9 +16,8 @@
 
 import os, sys
 import unittest
-sys.path.insert(0, '../')
-import network
-import program_manager
+sys.path.insert(0, '../src')
+import network, program_manager
 sys.path.pop(0)
 
 
@@ -313,7 +312,7 @@ if __name__ == '__main__':
     # You don't have to reload 'ipython' for each changement in a module.
     del sys.modules['network']
     del sys.modules['program_manager']
-    sys.path.insert(0, '../')
+    sys.path.insert(0, '../src')
     import network, program_manager
     sys.path.pop(0)
 

@@ -15,7 +15,7 @@
 # details.
 
 import os, sys, commands
-sys.path.insert(0, '../')
+sys.path.insert(0, '../src')
 import network
 sys.path.pop(0)
 
