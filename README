@@ -57,13 +57,13 @@ script.
 Test
 ----
 
-You can launch 'python remote_hosts_test.py' in the directory 'test' to know
+You can launch 'python remote_hosts_test.py' in the directory './test' to know
 if you do not have any access problem. You can try too:
-    cd test
+    cd ./test
     python tests.py
 It checks the modules 'network.py' and 'program_manager.py'.
 
-Moreover, you have a few scripts in 'example':
+Moreover, you have a few scripts in './example':
     - program.py
     - remote.py
 
@@ -72,9 +72,9 @@ Moreover, you have a few scripts in 'example':
 Documentation
 -------------
 
-A soft description of each class and each method is available in the code. You
-can also generate the documentation with Doxygen in the directory 'doc'. Read
-'doc/REAMDE' to have more explanations.
+A soft description of each class and each method is available in the source
+code. You can also generate the documentation with Doxygen in the directory
+'./doc'. Read './doc/REAMDE' for more explanations.
 
 
 --------
