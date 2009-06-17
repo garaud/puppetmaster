@@ -1,7 +1,8 @@
-# Copyright (C) 2009 INRIA
+# Copyright (C) 2009 INRIA - EDF R&D
 # Authors: Damien Garaud
 # 
-# This file an example for the module 'program_manager.py'.
+# This file is part of the PuppetMaster project. It is an example for the
+# module 'program_manager.py'.
 # 
 # This script is free; you can redistribute it and/or modify it under the
 # terms of the GNU General Public License as published by the Free Software

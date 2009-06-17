@@ -1,8 +1,8 @@
 # Copyright (C) 2006-2009, ENPC - INRIA - EDF R&D
 #     Author(s): Vivien Mallet, Damien Garaud
 #
-# This file provides facilities to launch several programs with or without
-# configuration files.
+# This file is part of the PuppetMaster project. It provides facilities to
+# launch several programs with or without configuration files.
 #
 # This script is free; you can redistribute it and/or modify it under the
 # terms of the GNU General Public License as published by the Free Software

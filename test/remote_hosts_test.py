@@ -1,7 +1,8 @@
-# Copyright (C) 2008-2009 EDF R&D
+# Copyright (C) 2009 INRIA - EDF R&D
 # Author: Damien Garaud
 #
-# This file provides to check the access to remote hosts.
+# This file is part of the PuppetMaster project. It checks the access to
+# remote hosts.
 # 
 # This script is free; you can redistribute it and/or modify it under the
 # terms of the GNU General Public License as published by the Free Software

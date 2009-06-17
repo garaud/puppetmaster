@@ -1,8 +1,8 @@
-# Copyright (C) 2005-2009 INRIA
+# Copyright (C) 2005-2009 INRIA - EDF R&D
 # Authors: Vivien Mallet, Damien Garaud
 # 
-# This file provides facilities to deal with computations over a Linux
-# network.
+# This file is part of the PuppetMaster project. It provides facilities to
+# deal with computations over a Linux network.
 # 
 # This script is free; you can redistribute it and/or modify it under the
 # terms of the GNU General Public License as published by the Free Software
