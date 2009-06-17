@@ -9,7 +9,8 @@ system doxygen (www.doxygen.org) for this project.
 
 The file 'doxypy.py' is an input filter for Doxygen. It comes from
 http://code.foosel.org/doxypy
-and is licensed under the GPLv2.
+It is licensed under the GPLv2 and written by Philippe Neumann & Gina
+Haeussge.
 
 
 ------------------------
