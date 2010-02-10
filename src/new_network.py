@@ -117,9 +117,12 @@ class Network:
                 raise ValueError, "The hosts list is empty."
             if isinstance(host_list[0], str):
                 self.GetThreadHost(host_list)
-            if isinstance(host_list[0], type(host.Host)):
+            elif host_list[0].__class__ == host.Host:
                 for instance in host_list:
                     self.hosts.append(instance)
+            else:
+                raise ValueError, "The element of the list must be " \
+                    + " host names (str) or host instances (host.Host)."
         elif isinstance(host_list, str):
             if os.path.isfile(host_list):
                 file = open(host_list, 'r')
@@ -134,9 +137,8 @@ class Network:
             else:
                 raise ValueError, "The file '%s' not found." % host_list
         else:
-            self.hosts = [socket.gethostname()]
-            raise Warning, "The argument must be a list of hosts or a file."\
-                + " The list of hosts contains just the local host."
+            raise ValueError, "The argument must be a list of hosts" \
+                + " or a file."
 
 
     def PrintHostNames(self):
