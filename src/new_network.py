@@ -141,6 +141,14 @@ class Network:
                 + " or a file."
 
 
+    def SetHostList(self, host_list):
+        """Sets a new list of hosts.
+        \param host_list A list of host instances, host names or a file.
+        """
+        self.hosts = []
+        self.CheckArgument(host_list)
+
+
     def PrintHostNames(self):
         """Prints the name of hosts.
         """
@@ -156,6 +164,24 @@ class Network:
         for host in self.hosts:
             result.append(host.name)
         return result
+
+
+    def GetNhost(self):
+        """Returns the number of hosts.
+        @return Number of hosts.
+        """
+        return len(self.hosts)
+
+
+    def GetConnectedHostNumber(self):
+        """Returns the number of well connected hosts.
+        @return Number of connected hosts.
+        """
+        count = 0
+        for host in self.hosts:
+            if host.connection:
+                count += 1
+        return count
 
 
     def GetProcessorNumber(self):
