@@ -20,7 +20,7 @@ Provides class 'Host' designed to manage host.
 """
 
 import os, sys, commands
-import socket, popen2
+import socket, popen2, subprocess
 
 
 ########
@@ -345,6 +345,26 @@ class Host:
         else:
             return popen2.Popen4(self.ssh + self.name +
                                  " \"" + command + "\"")
+
+
+    def LaunchSubProcess(self, command):
+        """Launches a command in the background with the module 'subprocess'.
+        The standard output and error can be called with
+        'subprocess.Popen.communicate()' method when the process terminated.
+        \param command The name of the command.
+        @return A 'subprocess.Popen' instance.
+        """
+        if self.name == socket.gethostname():
+            print('LaunchSubProcess::localhost')
+            return subprocess.Popen([command], shell=True,
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE)
+        else:
+            print('LaunchSubProcess::remote host')
+            return subprocess.Popen([self.ssh + self.name + ' ' + command],
+                                    shell=True,
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE)
 
 
     def LaunchWait(self, command, ltime, wait = 0.1):
