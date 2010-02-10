@@ -112,7 +112,7 @@ class Network:
         """
         """
         if host_list == None:
-            self.hosts = [socket.gethostname()]
+            self.hosts = [host.Host(socket.gethostname())]
             pass
         elif isinstance(host_list, list):
             if len(host_list) == 0:
@@ -173,9 +173,10 @@ class Network:
         processus_list = []
         # Launches all threads.
         for hostname in host_list:
-            thread_host = ThreadHost(hostname)
-            processus_list.append(thread_host)
-            thread_host.start()
+            if len(hostname) != 0:
+                thread_host = ThreadHost(hostname)
+                processus_list.append(thread_host)
+                thread_host.start()
         # Gets the results.
         for processus in processus_list:
             processus.join()
@@ -256,8 +257,8 @@ class ThreadUptime(threading.Thread):
     def __init__(self, host):
         threading.Thread.__init__(self)
         self.host = host
-    def run(self):
         self.hostname = self.host.name
+    def run(self):
         self.uptime = self.host.GetUptime()
 
 
@@ -267,8 +268,8 @@ class ThreadUsedMemory(threading.Thread):
     def __init__(self, host):
         threading.Thread.__init__(self)
         self.host = host
-    def run(self):
         self.hostname = self.host.name
+    def run(self):
         self.used_memory = self.host.GetUsedMemory()
 
 
