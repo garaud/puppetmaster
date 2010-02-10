@@ -31,9 +31,10 @@ import socket, popen2
 ## It may be written in a temporary SSH configuration file.
 _sshconfig_ = """
 Host *
-CheckHostIP no
+ForwardX11Trusted yes
+
+StrictHostKeyChecking no
 NoHostAuthenticationForLocalhost yes
-ChallengeResponseAuthentication no
 """
 
 
