@@ -25,9 +25,6 @@ import socket, popen2
 import threading
 import host
 
-## The ssh command.
-ssh = 'ssh '
-
 
 ###########################
 # MISCELLANEOUS FUNCTIONS #
@@ -109,7 +106,8 @@ class Network:
 
 
     def CheckArgument(self, host_list):
-        """
+        """Checks the argument.
+        \param host_list A list of host instances, host names or a file.
         """
         if host_list == None:
             self.hosts = [host.Host(socket.gethostname())]
@@ -150,7 +148,7 @@ class Network:
 
     def GetHostNames(self):
         """Returns the hosts names.
-        @return the list of hosts.
+        @return The list of hosts.
         """
         result = []
         for host in self.hosts:
@@ -219,7 +217,6 @@ class Network:
 
     def GetAvailableHosts(self):
         """Returns the available hosts.
-
         @return a list of hosts in a tuple with the number of available
         cpu. The computation is done with the system load averages for the
         past 1 minute. See the Unix command 'uptime'.
@@ -230,11 +227,10 @@ class Network:
         for host in self.hosts:
             index = [x[0] for x in uptime_list].index(host.name)
             average = uptime_list[index][1][0]
-            if average < host.Nprocessor - 0.5:
+            if average < host.Nprocessor - 0.5 and average != 'off':
                 result.append((host.name, int(host.Nprocessor
                                               - average + 0.5)))
         return result
-
 
 
 ###################
