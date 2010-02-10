@@ -58,6 +58,9 @@ class Host:
         ## The total memory.
         self.total_memory = 0
 
+        ## Connection failed?
+        self.connection = False
+
         ## The default SSH command.
         self.ssh = "ssh "
         if forced_ssh_config:
@@ -74,7 +77,7 @@ class Host:
         # Checks SSH connection. Changed the SSH command if necessary.
         try:
             self.CheckSSH()
-        except ValueError:
+        except SystemError:
             if not os.path.isfile('/tmp/ssh-config-puppet'):
                 file = open('/tmp/ssh-config-puppet', 'w')
                 file.writelines(_sshconfig_)
@@ -84,13 +87,14 @@ class Host:
             try:
                 self.CheckSSH()
             except:
-                print("ssh not work !")
-                sys.exit(1)
+                print "WARNING: The connection to the host "\
+                    + "'%s' failed." % self.name
 
-        # Gets the number of processors.
-        self.GetProcessorNumber()
-        # Get the total memory.
-        self.GetTotalMemory()
+        if self.connection:
+            # Gets the number of processors.
+            self.GetProcessorNumber()
+            # Get the total memory.
+            self.GetTotalMemory()
 
 
     def __del__(self):
@@ -105,8 +109,10 @@ class Host:
         """Checks the argument.
         \param host The name of the host.
         """
+        # Argument is a string.
         if isinstance(host, str):
             self.name = host
+        # Argument is a tuple (hostname, Nprocessor).
         elif isinstance(host, tuple):
             if len(host) != 2:
                 raise ValueError, "The length of the tuple must be 2."
@@ -120,6 +126,7 @@ class Host:
                     + "an integer strictly positive."
             else:
                 self.Nprocessor = host[-1]
+        # Argument is a list (hostname, Nprocessor).
         elif isinstance(host, list):
             if len(host) != 2:
                 raise ValueError, "The length of the list must be 2."
@@ -136,21 +143,28 @@ class Host:
         else:
             raise ValueError, "The argument must be the host name (str)" \
                 + ", a tuple (hostname, Ncpu) or a list [hostname, Ncpu]."
+        # If the host name is empty.
+        if len(self.name) == 0:
+            raise ValueError, "The name of host is empty."
 
 
     def CheckSSH(self):
         """Checks the SSH connection.
-        Launch a simple command via SSH (uptime). This command must be
+        Launches a simple command via SSH (uptime). This command must be
         returned no error and just a single line.
         """
         if self.name == socket.gethostname():
+            self.connection = True
             pass
         else:
-            # Uptime test.
-            command_name = self.ssh + self.name + " uptime"
+            # SSH 'pwd' test.
+            command_name = self.ssh + self.name + " pwd 2> /dev/null"
             status, out = commands.getstatusoutput(command_name)
-            if len(out.split('\n')) > 1:
-                raise ValueError
+            if status != 0 or len(out) == 0:
+                self.connection = False
+                raise SystemError
+            else:
+                self.connection = True
 
 
     def GetProcessorNumber(self):
@@ -161,21 +175,24 @@ class Host:
             return self.Nprocessor
         else:
             command_name = " cat /proc/cpuinfo | grep ^processor | wc -l"
+            # If the host is the localhost.
             if self.name == socket.gethostname():
                 status, out = commands.getstatusoutput(command_name)
-                if status != 0:
-                    self.RaiseErrorCommand(command_name, status, out)
-                if len(out.split('\n')) != 1:
+                # The command must be returned a non-zero status and a single
+                # line.
+                if status != 0 or len(out.split('\n')) != 1:
                     self.RaiseErrorCommand(command_name, status, out)
                 self.Nprocessor = int(out)
             else:
-                command_name = self.ssh + self.name + command_name
-                status, out = commands.getstatusoutput(command_name)
-                if status != 0:
-                    self.RaiseErrorCommand(command_name, status, out)
-                if len(out.split('\n')) != 1:
-                    self.RaiseErrorCommand(command_name, status, out)
-                self.Nprocessor = int(out)
+                try:
+                    self.CheckSSH()
+                except SystemError:
+                    pass
+                if self.connection:
+                    command_name = self.ssh + self.name + " 2>/dev/null"\
+                        + command_name
+                    status, out = commands.getstatusoutput(command_name)
+                    self.Nprocessor = int(out)
             return self.Nprocessor
 
 
@@ -188,22 +205,25 @@ class Host:
         else:
             command_name = " cat /proc/meminfo | grep ^MemTotal " \
                 + "| cut -d : -f 2"
+            # If the host is the localhost.
             if self.name == socket.gethostname():
                 status, out = commands.getstatusoutput(command_name)
-                if status != 0:
-                    self.RaiseErrorCommand(command_name, status, out)
-                if len(out.split('\n')) != 1:
+                # The command must be returned a non-zero status and a single
+                # line.
+                if status != 0 or len(out.split('\n')) != 1:
                     self.RaiseErrorCommand(command_name, status, out)
                 self.total_memory = int(out.split()[0])
                 return self.total_memory
             else:
-                command_name = self.ssh + self.name + command_name
-                status, out = commands.getstatusoutput(command_name)
-                if status != 0:
-                    self.RaiseErrorCommand(command_name, status, out)
-                if len(out.split('\n')) != 1:
-                    self.RaiseErrorCommand(command_name, status, out)
-                self.total_memory = int(out.split()[0])
+                try:
+                    self.CheckSSH()
+                except SystemError:
+                    pass
+                if self.connection:
+                    command_name = self.ssh + self.name + " 2>/dev/null" \
+                        + command_name
+                    status, out = commands.getstatusoutput(command_name)
+                    self.total_memory = int(out.split()[0])
                 return self.total_memory
 
 
@@ -213,9 +233,12 @@ class Host:
         @return A list of floats or a string if the connection failed.
         """
         command_name = " uptime"
+        # If the host is the localhost.
         if self.name == socket.gethostname():
             status, out = commands.getstatusoutput(command_name)
-            if status != 0:
+            # The command must be returned a non-zero status and a single
+            # line.
+            if status != 0 or len(out.split('\n')) != 1:
                 self.RaiseErrorCommand(command_name, status, out)
             try:
                 out = out.split()
@@ -225,17 +248,21 @@ class Host:
                 out = "off"
             return out
         else:
-            command_name = self.ssh + self.name + command_name
-            status, out = commands.getstatusoutput(command_name)
-            if status != 0:
-                self.RaiseErrorCommand(command_name, status, out)
             try:
-                out = out.split()
-                out = [float(x.strip(",")) for x in out[-3:]]
-            except:
-                # Connection failed?
-                out = "off"
-            return out
+                self.CheckSSH()
+            except SystemError:
+                return "off"
+            if self.connection:
+                command_name = self.ssh + self.name + " 2>/dev/null" \
+                    + command_name
+                status, out = commands.getstatusoutput(command_name)
+                try:
+                    out = out.split()
+                    out = [float(x.strip(",")) for x in out[-3:]]
+                except:
+                    # Connection failed?
+                    out = "off"
+                return out
 
 
     def GetUsedMemory(self):
@@ -243,8 +270,10 @@ class Host:
         @return An integer or a string if the connection failed.
         """
         command_name = " free | cut -d : -f 2"
+        # If the host is the localhost.
         if self.name == socket.gethostname():
             status, out = commands.getstatusoutput(command_name)
+            # The command must be returned a non-zero status.
             if status != 0:
                 self.RaiseErrorCommand(command_name, status, out)
             try:
@@ -255,10 +284,13 @@ class Host:
                 out = "off"
             return out
         else:
-            command_name = self.ssh + self.name + command_name
+            try:
+                self.CheckSSH()
+            except SystemError:
+                return "off"
+            if self.connection:
+                command_name = self.ssh + self.name + command_name
             status, out = commands.getstatusoutput(command_name)
-            if status != 0:
-                self.RaiseErrorCommand(command_name, status, out)
             try:
                 out = out.split('\n')[2]
                 out = int(out.split()[0])
