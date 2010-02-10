@@ -262,9 +262,11 @@ class Network:
         for host in self.hosts:
             index = [x[0] for x in uptime_list].index(host.name)
             average = uptime_list[index][1][0]
-            if average < host.Nprocessor - 0.5 and average != 'off':
-                result.append((host.name, int(host.Nprocessor
-                                              - average + 0.5)))
+            if host.connection:
+                average = uptime_list[index][1][0]
+                if average < host.Nprocessor - 0.5:
+                    result.append((host.name, int(host.Nprocessor
+                                                  - average + 0.5)))
         return result
 
 
