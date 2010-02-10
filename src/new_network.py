@@ -104,6 +104,10 @@ class Network:
 
         self.CheckArgument(host_list)
 
+        # Empty connected hosts list?
+        if self.GetConnectedHostNumber() == 0:
+            raise ValueError, "The list of connected hosts list is empty."
+
 
     def CheckArgument(self, host_list):
         """Checks the argument.
@@ -147,6 +151,9 @@ class Network:
         """
         self.hosts = []
         self.CheckArgument(host_list)
+        # Empty connected hosts list?
+        if self.GetConnectedHostNumber() == 0:
+            raise ValueError, "The list of connected hosts list is empty."
 
 
     def PrintHostNames(self):
