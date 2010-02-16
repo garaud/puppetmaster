@@ -67,7 +67,6 @@ class Host:
             if not os.path.isfile('/tmp/ssh-config-puppet'):
                 file = open('/tmp/ssh-config-puppet', 'w')
                 file.writelines(_sshconfig_)
-                self.file_exit = 1
                 file.close()
             self.ssh = "ssh -F /tmp/ssh-config-puppet "
 
@@ -81,7 +80,6 @@ class Host:
             if not os.path.isfile('/tmp/ssh-config-puppet'):
                 file = open('/tmp/ssh-config-puppet', 'w')
                 file.writelines(_sshconfig_)
-                self.file_exit = 1
                 file.close()
             self.ssh = "ssh -F /tmp/ssh-config-puppet "
             try:
