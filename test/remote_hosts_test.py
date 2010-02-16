@@ -1,9 +1,9 @@
-# Copyright (C) 2009 INRIA - EDF R&D
+# Copyright (C) 2009-2010 INRIA - EDF R&D
 # Author: Damien Garaud
 #
 # This file is part of the PuppetMaster project. It checks the access to
 # remote hosts.
-# 
+#
 # This script is free; you can redistribute it and/or modify it under the
 # terms of the GNU General Public License as published by the Free Software
 # Foundation; either version 2 of the License, or (at your option) any later
@@ -14,36 +14,54 @@
 # FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
 # details.
 
-import os, sys, commands
+import os, sys
 sys.path.insert(0, '../src')
-import network
+import host
 sys.path.pop(0)
 
 
-# HOME and DSH directories.
-home_dir = os.environ['HOME']
-dsh_dir = os.path.join(home_dir, '.dsh/group/')
+#############
+# ARGUMENTS #
+#############
+
+help_message = \
+"""
+Usage:
+ python %s [host_file]
+ Checks the connection to each host defined in a file.
+
+Arguments:
+ [host_file]: the file where the host names are defined (one for each line).
+""" % sys.argv[0]
+
+if len(sys.argv) != 2:
+    print help_message
+    sys.exit(0)
+else:
+    host_file = sys.argv[1]
 
 
-# Exceptions.
-if not os.path.isdir(dsh_dir):
-    raise Exception, "The directory \"" + dsh_dir  + "\" does not exist." \
-        + " Please install 'dsh' and create this directory."
+###############
+# DECLARATION #
+###############
 
-if not os.path.isfile(os.path.join(dsh_dir, 'all')):
-    raise Exception, "Please create the file 'all' in " \
-        + dsh_dir + " with the name of all hosts."
-
-
-# File where there are the list of hosts.
-host_file = open(os.path.join(dsh_dir, 'all'), 'r')
-host_list = host_file.readlines()
-host_file.close()
+# Host file name checking.
+if not os.path.isfile(host_file):
+    raise Exception, "The file '%s' not found." % host_file
 
 
-# A loop to check the 'uptime' unix command for every hosts.
-for host in host_list:
-    command = 'ssh ' + host.strip() + ' uptime'
-    (s, o) = commands.getstatusoutput(command)
-    if s != 0:
-        print "The command '" + command + "' failed."
+##############
+# PROCESSING #
+##############
+
+# Reads the host names.
+f = open(host_file, 'r')
+output = f.readlines()
+f.close()
+
+# Loop to declare and check each host.
+for name in output:
+    name = name.strip('\n')
+    host_instance = host.Host(name, forced_ssh_config = True)
+    if host_instance.connection:
+        print("%s -- OK" % name)
