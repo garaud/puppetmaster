@@ -368,7 +368,6 @@ class Host:
     def LaunchWait(self, command, ltime, wait = 0.1):
         """Launches a command in the foreground and waits for its output for a
         given time after which the process is killed.
-
         \param command The name of the command.
         \param ltime The limit time.
         \param wait The waiting time.

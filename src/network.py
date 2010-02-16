@@ -91,7 +91,9 @@ def remove(files):
 
 
 class Network:
-    """Dedicated to network management."""
+    """Dedicated to network management.
+    It contains a list of 'host.Host' instances.
+    """
 
 
     def __init__(self, host_list = None):
@@ -113,9 +115,11 @@ class Network:
         """Checks the argument.
         \param host_list A list of host instances, host names or a file.
         """
+        # The local host by default.
         if host_list == None:
             self.hosts = [host.Host(socket.gethostname())]
             pass
+        # A list of hosts (name or instance).
         elif isinstance(host_list, list):
             if len(host_list) == 0:
                 raise ValueError, "The hosts list is empty."
@@ -127,6 +131,7 @@ class Network:
             else:
                 raise ValueError, "The element of the list must be " \
                     + " host names (str) or host instances (host.Host)."
+        # A file with the list of host names
         elif isinstance(host_list, str):
             if os.path.isfile(host_list):
                 file = open(host_list, 'r')
@@ -165,7 +170,7 @@ class Network:
 
     def GetHostNames(self):
         """Returns the hosts names.
-        @return The list of hosts.
+        @return The list of host names.
         """
         result = []
         for host in self.hosts:
@@ -192,7 +197,8 @@ class Network:
 
 
     def GetProcessorNumber(self):
-        """
+        """Returns the number or cpu for each host.
+        @retrun A list of tuples (hostname, Nprocessor)
         """
         result = []
         for host in self.hosts:
@@ -201,7 +207,8 @@ class Network:
 
 
     def GetThreadHost(self, host_list):
-        """
+        """Creates 'host.Host' instances with multi-threading.
+        \param host_list A list of host names.
         """
         processus_list = []
         # Launches all threads.
@@ -217,7 +224,9 @@ class Network:
 
 
     def GetUptime(self):
-        """
+        """Returns the output of the Unix command 'uptime' for each host.
+        Launches the command 'uptime' to each host with multi-threading.
+        @return A list of tuples (hostname, uptime).
         """
         processus_list = []
         result = []
@@ -234,7 +243,9 @@ class Network:
 
 
     def GetUsedMemory(self):
-        """
+        """Returns the used memory for each host (kB).
+        Launches the Unix command 'free' to each host with multi-threading.
+        @return A list of tuples (hostname, used memory).
         """
         processus_list = []
         result = []
@@ -255,6 +266,7 @@ class Network:
         @return a list of hosts in a tuple with the number of available
         cpu. The computation is done with the system load averages for the
         past 1 minute. See the Unix command 'uptime'.
+        @return A list of tuples (hostname, available cpu).
         """
         uptime_list = self.GetUptime()
         result = []
@@ -276,8 +288,7 @@ class Network:
         available host, waits for an available host while the list is empty.
         \param wait_time Waiting time until a new checking of available hosts
         (in seconds).
-        @return A list of hosts in a tuple with the number of available
-        cpu.
+        @return A list of tuples (hostname, available cpu).
         """
         import time
         while len(self.GetAvailableHosts()) == 0:
@@ -287,9 +298,9 @@ class Network:
 
     def LaunchBG(self, command, host_):
         """Launches a command in the background.
-        \param command the name of the command.
-        \param host_ the name of the host or a 'host.Host' instance.
-        @return a Popen4 object.
+        \param command The name of the command.
+        \param host_ The name of the host or a 'host.Host' instance.
+        @return A Popen4 object.
         """
         import os
         if isinstance(host_, str):
@@ -310,7 +321,7 @@ class Network:
         The standard output and error can be called with
         'subprocess.Popen.communicate()' method when the process terminated.
         \param command The name of the command.
-        \param host_ the name of the host or a 'host.Host' instance.
+        \param host_ The name of the host or a 'host.Host' instance.
         @return A 'subprocess.Popen' instance.
         """
         import os
@@ -332,7 +343,8 @@ class Network:
 ###################
 
 class ThreadHost(threading.Thread):
-    """
+    """A derived class of 'threading.Thread'.
+    It is used to declare a list of hosts with multi-threading.
     """
     def __init__(self, hostname):
         threading.Thread.__init__(self)
@@ -342,7 +354,9 @@ class ThreadHost(threading.Thread):
 
 
 class ThreadUptime(threading.Thread):
-    """
+    """A derived class of 'threading.Thread'.
+    It is used to launch the Unix command 'uptime' to a list of hosts with
+    multi-threading.
     """
     def __init__(self, host):
         threading.Thread.__init__(self)
@@ -353,7 +367,9 @@ class ThreadUptime(threading.Thread):
 
 
 class ThreadUsedMemory(threading.Thread):
-    """
+    """A derived class of 'threading.Thread'.
+    It is used to launch the Unix command 'free' to a list of hosts with
+    multi-threading.
     """
     def __init__(self, host):
         threading.Thread.__init__(self)
