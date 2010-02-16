@@ -270,6 +270,21 @@ class Network:
         return result
 
 
+    def BusySoWait(self, wait_time = 5.):
+        """Checks the available hosts and waits if necessary.
+        When the list of available hosts is not empty, returns the list of
+        available host, waits for an available host while the list is empty.
+        \param wait_time Waiting time until a new checking of available hosts
+        (in seconds).
+        @return A list of hosts in a tuple with the number of available
+        cpu.
+        """
+        import time
+        while len(self.GetAvailableHosts()) == 0:
+            time.sleep(wait_time)
+        return self.GetAvailableHosts()
+
+
     def LaunchBG(self, command, host_):
         """Launches a command in the background.
         \param command the name of the command.
