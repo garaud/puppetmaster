@@ -121,7 +121,7 @@ class Network:
                 raise ValueError, "The hosts list is empty."
             if isinstance(host_list[0], str):
                 self.GetThreadHost(host_list)
-            elif host_list[0].__class__ == host.Host:
+            elif isinstance(host_list[0], host.Host):
                 for instance in host_list:
                     self.hosts.append(instance)
             else:
