@@ -355,12 +355,10 @@ class Host:
         @return A 'subprocess.Popen' instance.
         """
         if self.name == socket.gethostname():
-            print('LaunchSubProcess::localhost')
             return subprocess.Popen([command], shell=True,
                                     stdout=subprocess.PIPE,
                                     stderr=subprocess.PIPE)
         else:
-            print('LaunchSubProcess::remote host')
             return subprocess.Popen([self.ssh + self.name + ' ' + command],
                                     shell=True,
                                     stdout=subprocess.PIPE,
