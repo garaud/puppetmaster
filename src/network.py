@@ -270,6 +270,48 @@ class Network:
         return result
 
 
+    def LaunchBG(self, command, host_):
+        """Launches a command in the background.
+        \param command the name of the command.
+        \param host_ the name of the host or a 'host.Host' instance.
+        @return a Popen4 object.
+        """
+        import os
+        if isinstance(host_, str):
+            if host_ not in [x.name for x in self.hosts]:
+                raise ValueError, "The host name '%s' not found " % host_ \
+                    + "in the list of hosts."
+            index = [x.name for x in self.hosts].index(host_)
+            return self.hosts[index].LaunchBG(command)
+        if isinstance(host_, host.Host):
+            if host_.name not in [x.name for x in self.hosts]:
+                raise ValueError, "The host name '%s' not " % host_.name \
+                    + "found in the list of hosts."
+            return host_.LaunchBG(command)
+
+
+    def LaunchSubProcess(self, command, host_):
+        """Launches a command in the background with the module 'subprocess'.
+        The standard output and error can be called with
+        'subprocess.Popen.communicate()' method when the process terminated.
+        \param command The name of the command.
+        \param host_ the name of the host or a 'host.Host' instance.
+        @return A 'subprocess.Popen' instance.
+        """
+        import os
+        if isinstance(host_, str):
+            if host_ not in [x.name for x in self.hosts]:
+                raise ValueError, "The host name '%s' not found " % host_ \
+                    + "in the list of hosts."
+            index = [x.name for x in self.hosts].index(host_)
+            return self.hosts[index].LaunchSubProcess(command)
+        if isinstance(host_, host.Host):
+            if host_.name not in [x.name for x in self.hosts]:
+                raise ValueError, "The host name '%s' not " % host_.name \
+                    + "found in the list of hosts."
+            return host_.LaunchSubProcess(command)
+
+
 ###################
 # THREADING CLASS #
 ###################
