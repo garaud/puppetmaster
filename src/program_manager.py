@@ -17,15 +17,18 @@
 """\package program_manager
 
 This module provides facilities to launch several programs.
+
+Class list:
+ <ul>
+  <li>ProgramManager</li>
+  <li>Program</li>
+  <li>Configuration</li>
+ </ul>
+
 """
 
-
-try:
-    from network import Network
-except:
-    ## The module 'str' if the module 'network' is not available.
-    Network = str
-
+import host
+import network
 
 ###################
 # PROGRAM_MANAGER #
@@ -36,11 +39,10 @@ class ProgramManager:
     """This class manages the execution of several programs.
     """
 
-    
-    def __init__(self, net = Network()):
-        """Initializes the network and the logs.
 
-        \param net the network over which the simuations should be launched.
+    def __init__(self, net = network.Network()):
+        """Initializes the network and the logs.
+        \param net The network over which the simuations should be launched.
         """
         ## The list of programs.
         self.program_list = []
@@ -51,29 +53,27 @@ class ProgramManager:
         ## The list of processes.
         self.process = []
 
-        ## A network.Network instance.
+        ## A 'network.Network' instance.
         self.net = net
 
 
     def GetLog(self):
         """Returns the log.
-        @return simulation logs.
+        @return Simulation logs.
         """
         return self.log
 
 
-    def SetNetwork(self, net = Network()):
+    def SetNetwork(self, net = network.Network()):
         """Sets the network.
-
-        \param net the network over which the simuations should be launched.
+        \param net The network over which the simuations should be launched.
         """
         self.net = net
 
-        
+
     def AddProgram(self, program):
         """Adds a program.
-
-        \param program the program to be added.
+        \param program The program to be added.
         """
         if isinstance(program, str):
             self.program_list.append(Program(program))
@@ -114,11 +114,12 @@ class ProgramManager:
                       + "\" failed."
 
 
-    def RunNetwork(self, delay = 30):
+    def RunNetwork(self, delay = 2., wait_time = 10.):
         """Executes the set of programs on the network.
-
-        \param delay the minimum period of time between the launch of two
+        \param delay The minimum period of time between the launching of two
         programs. Unit: seconds.
+        \param wait_time The waiting time before the end of a group of
+        programs.
         """
         import time, commands
         if len(self.program_list) == 0:
@@ -126,7 +127,7 @@ class ProgramManager:
         self.process = []
         host = []
         beg_time = []
-        ens_time = ["" for i in range(len(self.program_list))]
+        end_time = ["" for i in range(len(self.program_list))]
         # Index of the first program from current group.
         i_group = 0
         count_program = 1
@@ -146,8 +147,8 @@ class ProgramManager:
             program = self.program_list[i]
             if i > i_group and program.group != self.program_list[i-1].group:
                 # If any process from the previous group is still up.
-                while min([x.poll() for x in self.process[i_group:]]) == -1:
-                    time.sleep(delay)
+                while None in [x.poll() for x in self.process[i_group:]]:
+                    time.sleep(wait_time)
                 i_group = i
                 count_program = 1
                 count_host = 0
@@ -158,8 +159,7 @@ class ProgramManager:
                               in range(len(Ncpu_list))]
             # If all hosts are busy.
             if count_program > Ncpu:
-                time.sleep(70.)
-                host_available = self.net.GetAvailableHosts()
+                host_available = self.net.BusySoWait(40.)
                 Ncpu_list = [x[1] for x in host_available]
                 Ncpu = sum(Ncpu_list)
                 cpu_cumsum = [sum(Ncpu_list[0:x + 1]) for x \
@@ -167,8 +167,7 @@ class ProgramManager:
                 count_host = 0
                 count_program = 1
                 while Ncpu == 0:
-                    time.sleep(60.)
-                    host_available = self.net.GetAvailableHosts()
+                    host_available = self.net.BusySoWait(40.)
                     Ncpu_list = [x[1] for x in host_available]
                     Ncpu = sum(Ncpu_list)
                 cpu_cumsum = [sum(Ncpu_list[0:x + 1]) for x \
@@ -177,37 +176,62 @@ class ProgramManager:
             # Changes host.
             if count_program > cpu_cumsum[count_host]:
                 count_host += 1
-                
             current_host = host_available[count_host][0]
+
+            # Launches the subprocess.
             print "Program: ", program.basename, \
                 " - Available host: ", current_host
-            p = self.net.LaunchBG(program.Command(), host = current_host)
+            p = self.net.LaunchSubProcess(program.Command(), current_host)
             self.process.append(p)
             count_program += 1
             host.append(current_host)
             beg_time.append(time.asctime())
 
+            # If processus is done, writes the ended date.
             for j in range(i):
-                if ens_time[j] == "" and self.process[i].poll() != 1:
-                    ens_time[j] = time.asctime()
+                if end_time[j] == "" and self.process[j].poll() != None:
+                    end_time[j] = time.asctime()
 
-            # Checks process status.
-            for j in range(i):
-                if self.process[j].poll() != -1 and self.process[j].wait() != 0:
-                    raise Exception, "The command: \"" + self.process[j].cmd \
+            # Checks current process status.
+            i_proc = i_group
+            for subproc in self.process[i_group:]:
+                if subproc.poll() != None and subproc.wait() != 0:
+                    std_message = subproc.communicate()
+                    raise Exception, "The program: \"" \
+                        + self.program_list[i_proc].Command() \
                           + "\" does not work.\n" \
-                          + "status: " + str(self.process[j].wait()) + ".\n" \
-                          + "Error message: " \
-                          + commands.getoutput("cat " +
-                                               self.process[j].cmd.split()[-1])
-        
-        # Waits for the latest programs.
-        while min([x.poll() for x in self.process[i_group:]]) == -1:
+                          + "status: " + str(subproc.wait()) \
+                          + "\n\nOutput message:" \
+                          + " \n  STDOUT: " + std_message[0] \
+                          + " \n  STDERR: " + std_message[1]
+                i_proc += 1
+            # Wainting time.
             time.sleep(delay)
-            for j in range(len(self.program_list)):
-                if ens_time[j] == "" and self.process[i].poll() != 1:
-                    ens_time[j] = time.asctime()
 
+        # Waits for the latest programs.
+        while None in [x.poll() for x in self.process[i_group:]]:
+            time.sleep(delay)
+
+        # Writes the ended date.
+        for j in range(len(self.program_list)):
+            if end_time[j] == "":
+                end_time[j] = time.asctime()
+
+        # Checks current process status.
+        i_proc = i_group
+        for subproc in self.process[i_group:]:
+            if subproc.poll() != None and subproc.wait() != 0:
+                std_message = subproc.communicate()
+                raise Exception, "The program: \"" \
+                    + self.program_list[i_proc].Command() \
+                    + "\" does not work.\n" \
+                    + "status: " + str(subproc.wait()) \
+                    + "\n\nOutput message:" \
+                    + " \n  STDOUT: " + std_message[0] \
+                    + " \n  STDERR: " + std_message[1]
+            i_proc += 1
+
+        # Writes the log.
         i_group = 0
         for i in range(len(self.program_list)):
             program = self.program_list[i]
@@ -217,14 +241,13 @@ class ProgramManager:
                              + " ###").center(78)
                 self.log += "\n\n" + "-" * 78 + "\n\n"
                 i_group = i
-            
             self.log += program.Command()
             if self.log[-1] != "\n":
                 self.log += "\n"
             self.log += "\nStatus: " + str(self.process[i].poll()) + "\n"
             self.log += "Hostname: " + str(host[i]) + "\n"
             self.log += "Started at " + str(beg_time[i]) + "\n"
-            self.log += "Ended approximatively at " + str(ens_time[i]) \
+            self.log += "Ended approximatively at " + str(end_time[i]) \
                         + "\n"
             self.log += "\n" + "-" * 78 + "\n\n"
 
@@ -262,8 +285,12 @@ class Program:
         the configuration files.
         \param group the group index.
         """
+        import os
+
         if config is not None:
-            ## A configuration file or a program_manager.Configuration instance.
+            ## \brief A configuration file.
+            ## \detail It can be the path (str) to the configuration file or a
+            ## 'program_manager.Configuration' instance.
             self.config = config
         else:
             self.config = Configuration()
@@ -271,11 +298,9 @@ class Program:
         ## The path of the program.
         self.name = name
 
-        import os
-
         ## The basename of the program.
         self.basename = os.path.basename(name)
-        
+
         ## A string.
         self.exec_path = "./"
 
@@ -308,7 +333,6 @@ class Program:
 
     def Command(self):
         """Returns the command to launch the program.
-
         The program must be ready to be launched.
         """
         if not self.IsReady():
@@ -322,19 +346,18 @@ class Program:
     def SetConfiguration(self, config, mode = "random", path = None,
                          replacement = None, additional_file_list = []):
         """Sets the program configuration files.
-
-        \param config the configuration files associated with the program.
-        \param mode the copy mode. Mode "raw" just copies to the target path,
+        \param config The configuration files associated with the program.
+        \param mode The copy mode. Mode "raw" just copies to the target path,
         while mode "random" appends a random string at the end of the file
         name. Mode "random_path" appends a random directory in the path. This
         entry is useless if "config" is a Configuration instance.
-        \param path the path where configuration files should be copied. If
+        \param path The path where configuration files should be copied. If
         set to None, then the temporary directory "/tmp" is used. This entry
         is useless if "config" is a Configuration instance.
-        \param replacement the map of replaced strings and the replacement
+        \param replacement The map of replaced strings and the replacement
         values. This entry is useless if "config" is a Configuration
         instance.
-        \param additional_file_list an additional configuration file or a
+        \param additional_file_list An additional configuration file or a
         list of additional configuration files to be managed. Just like
         primary configuration files, they are subject to the replacements and
         copies, but are not considered as program arguments.
@@ -367,11 +390,10 @@ class Program:
 
     def IsReady(self):
         """Checks whether the program can be launched.
-
         @return True if the program can be executed, False otherwise.
         """
         return self.config.IsReady()
-        
+
 
 #################
 # CONFIGURATION #
@@ -379,8 +401,7 @@ class Program:
 
 
 class Configuration:
-    """This class manages configuration files. 
-
+    """This class manages configuration files.
     It proceeds replacements in the files and makes copies of the files.
     """
 
@@ -388,15 +409,14 @@ class Configuration:
     def __init__(self, file_list = [], mode = "random", path = None,
                  additional_file_list = []):
         """Iniitialization of configuration information.
-
-        \param file_list the configuration file or the list of configuration
+        \param file_list The configuration file or the list of configuration
         files to be managed.
-        \param mode the copy mode. Mode "raw" just copies to the target path,
+        \param mode The copy mode. Mode "raw" just copies to the target path,
         while mode "random" appends a random string at the end of the file
         name. Mode "random_path" appends a random directory in the path.
-        \param path the path where configuration files should be copied. If
+        \param path The path where configuration files should be copied. If
         set to None, then the temporary directory "/tmp" is used.
-        \param additional_file_list an additional configuration file or a
+        \param additional_file_list An additional configuration file or a
         list of additional configuration files to be managed. Just like
         primary configuration files, they are subject to the replacements and
         copies, but are not considered as program arguments.
@@ -422,7 +442,7 @@ class Configuration:
         ## The list of replaced configuration files.
         self.file_list = []
 
-        ## Are the configuration files ready to use? 
+        ## Are the configuration files ready to use?
         self.ready = False
 
         self.SetMode(mode)
@@ -434,7 +454,7 @@ class Configuration:
 
     def SetMode(self, mode = "random"):
         """Sets the copy mode.
-        \param mode the copy mode. Mode "raw" just copies to the target path,
+        \param mode The copy mode. Mode "raw" just copies to the target path,
         while mode "random" appends a random string at the end of the file
         name. Mode "random_path" appends a random directory in the path.
         """
@@ -447,7 +467,7 @@ class Configuration:
 
     def SetPath(self, path):
         """Sets the path.
-        \param path the path where configuration fiels should be copied. If
+        \param path The path where configuration fiels should be copied. If
         set to None, then the temporary directory "/tmp" is used.
         """
         if path is not None:
@@ -459,17 +479,15 @@ class Configuration:
 
     def IsReady(self):
         """Tests whether the configuration files are ready for use.
-
         @return True if the configuration files are ready for use, False
         otherwise.
         """
         return self.ready or self.raw_file_list == []
-        
+
 
     def GetReplacementMap(self):
         """Returns the map of replaced strings and the replacement values.
-
-        @return the map of replaced strings and the replacement values.
+        @return The map of replaced strings and the replacement values.
         """
         return self.config
 
@@ -485,13 +503,12 @@ class Configuration:
 
     def SetConfiguration(self, config, mode = "random", path = None):
         """Initialization of configuration information, except file names.
-
-        \param config the map of replaced strings and the replacement
+        \param config The map of replaced strings and the replacement
         values.
-        \param mode the copy mode. Mode "raw" just copies to the target path,
+        \param mode The copy mode. Mode "raw" just copies to the target path,
         while mode "random" appends a random string at the end of the file
         name. Mode "random_path" appends a random directory in the path.
-        \param path the path where configuration fiels should be copied. If
+        \param path The path where configuration fiels should be copied. If
         set to None, then the temporary directory "/tmp" is used.
         """
         self.SetMode(mode)
@@ -535,20 +552,18 @@ class Configuration:
                 print new_line,
             fileinput.close()
         self.ready = True
-        
+
 
     def GetRawFileList(self):
         """Returns the list of reference (or raw) configuration files.
-
-        @return the list of reference (or raw) configuration files.
+        @return The list of reference (or raw) configuration files.
         """
         return self.raw_file_list
 
 
     def SetRawFileList(self, file_list):
         """Sets the list of reference (or raw) configuration files.
-
-        \param file_list the list of reference (or raw) configuration files.
+        \param file_list The list of reference (or raw) configuration files.
         """
         self.raw_file_list = file_list
         self.ready = False
@@ -567,8 +582,7 @@ class Configuration:
 
     def GetArgument(self):
         """Returns the list of program arguments.
-
-        @return the list of program arguments aggregated in a string (and
+        @return The list of program arguments aggregated in a string (and
         split by an empty space).
         """
         if self.IsReady():
