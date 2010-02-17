@@ -1,9 +1,9 @@
-# Copyright (C) 2009 INRIA - EDF R&D
+# Copyright (C) 2009-2010 INRIA - EDF R&D
 # Authors: Damien Garaud
-# 
+#
 # This file is part of the PuppetMaster project. It is an example for the
 # module 'program_manager.py'.
-# 
+#
 # This script is free; you can redistribute it and/or modify it under the
 # terms of the GNU General Public License as published by the Free Software
 # Foundation; either version 2 of the License, or (at your option) any later
@@ -47,7 +47,8 @@ config.SetReplacementMap(replacement)
 # Proceeds replacement.
 config.Proceed()
 print "The replacement is done."
-print("See the file: \'" + config.file_list[0] + "\' \nand compare it with \'" \
+print("See the file: \'" + config.file_list[0] \
+          + "\' \nand compare it with \'" \
           + config.raw_file_list[0] + "\'.")
 print "\nDo not forget to remove it."
 

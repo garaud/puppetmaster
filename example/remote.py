@@ -1,9 +1,9 @@
-# Copyright (C) 2009 INRIA
+# Copyright (C) 2009-2010 INRIA
 # Authors: Damien Garaud
-# 
+#
 #  This file is part of the PuppetMaster project. It is an example for the
 #  module 'network.py'.
-# 
+#
 # This script is free; you can redistribute it and/or modify it under the
 # terms of the GNU General Public License as published by the Free Software
 # Foundation; either version 2 of the License, or (at your option) any later
@@ -31,16 +31,13 @@ net = network.Network()
 host_list = net.GetHostNames()
 
 # Gets the load averages (1 minute) for each host (a list of tuples).
-load_avr_list = net.GetLoadAverages()
+load_avr_list = net.GetUptime()
 
 # The minimal load average in the list.
 min_load_avr = min([x[1] for x in load_avr_list])
 
 # The list of available hosts with their number of free processors.
 available_host_list = net.GetAvailableHosts()
-
-# Gets the name of an available host.
-available_host = net.GetAvailableHost()
 
 
 ######################
@@ -72,6 +69,11 @@ processus = net.LaunchBG(command_name)
 # On a remote host.
 processus = net.LaunchBG(command_name, random_host)
 # processus.poll() = 0 or -1 if the processus is not finished.
+
+# Launches a subprocess.
+subproc = net.LaunchSubProcess(command_name, random_host)
+# subproc.poll() must be equal to 0, None (if the process is not finished).
+# subproc.communicate() to display the stdout and the stderr of the command.
 
 # If you want to send a mail.
 message = "This is just a test."
