@@ -296,6 +296,50 @@ class Network:
         return self.GetAvailableHosts()
 
 
+    def LaunchInt(self, command, host_ = socket.gethostname()):
+        """Launches a command in interactive mode (using os.system).
+        \param command The name of the command.
+        \param host_ The name of the host or a 'host.Host' instance.
+        @return The status of the command.
+        """
+        import os
+        # The name of a host.
+        if isinstance(host_, str):
+            if host_ not in [x.name for x in self.hosts]:
+                raise ValueError, "The host name '%s' not found " % host_ \
+                    + "in the list of hosts."
+            index = [x.name for x in self.hosts].index(host_)
+            return self.hosts[index].LaunchInt(command)
+        # A 'Host' instance.
+        if isinstance(host_, host.Host):
+            if host_.name not in [x.name for x in self.hosts]:
+                raise ValueError, "The host name '%s' not " % host_.name \
+                    + "found in the list of hosts."
+            return host_.LaunchInt(command)
+
+
+    def LaunchFG(self, command, host_ = socket.gethostname()):
+        """Launches a command in the foreground.
+        \param command The name of the command.
+        \param host_ The name of the host or a 'host.Host' instance.
+        @return The output and the status of the command in a tuple.
+        """
+        import os
+        # The name of a host.
+        if isinstance(host_, str):
+            if host_ not in [x.name for x in self.hosts]:
+                raise ValueError, "The host name '%s' not found " % host_ \
+                    + "in the list of hosts."
+            index = [x.name for x in self.hosts].index(host_)
+            return self.hosts[index].LaunchFG(command)
+        # A 'Host' instance.
+        if isinstance(host_, host.Host):
+            if host_.name not in [x.name for x in self.hosts]:
+                raise ValueError, "The host name '%s' not " % host_.name \
+                    + "found in the list of hosts."
+            return host_.LaunchFG(command)
+
+
     def LaunchBG(self, command, host_ = socket.gethostname()):
         """Launches a command in the background.
         \param command The name of the command.
