@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2009, ENPC - INRIA - EDF R&D
+# Copyright (C) 2006-2010, ENPC - INRIA - EDF R&D
 #     Author(s): Vivien Mallet, Damien Garaud
 #
 # This file is part of the PuppetMaster project. It provides facilities to
@@ -14,7 +14,7 @@
 # FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
 # details.
 
-"""\package program_manager
+"""\package src.program_manager
 
 This module provides facilities to launch several programs.
 
@@ -25,6 +25,7 @@ Class list:
   <li>Configuration</li>
  </ul>
 
+\author Vivien Mallet, Damien Garaud
 """
 
 import host
@@ -289,7 +290,7 @@ class Program:
 
         if config is not None:
             ## \brief A configuration file.
-            ## \detail It can be the path (str) to the configuration file or a
+            ## \details It can be the path (str) to the configuration file or a
             ## 'program_manager.Configuration' instance.
             self.config = config
         else:

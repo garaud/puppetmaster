@@ -14,9 +14,11 @@
 # FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
 # details.
 
-"""\package host
+"""\package src.host
 
 Provides class 'Host' designed to manage host.
+
+\author Damien Garaud
 """
 
 import os, sys, commands
@@ -47,6 +49,8 @@ class Host:
         """The constructor.
         Initializes the attributes and checks the SSH connection to the host.
         \param host The name of the host.
+        \param forced_ssh_config Would like to use the PuppetMaster SSH
+        configuration? (True or False). See the variable '_sshconfig_'.
         """
 
         ## Name of the host.

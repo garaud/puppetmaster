@@ -14,10 +14,12 @@
 # FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
 # details.
 
-"""\package network
+"""\package src.network
 
 Provides class 'Network' designed to managed processes launched over the
 network.
+
+\author Vivien Mallet, Damien Garaud
 """
 
 import os, sys, types, commands, string, pwd
@@ -198,7 +200,7 @@ class Network:
 
     def GetProcessorNumber(self):
         """Returns the number or cpu for each host.
-        @retrun A list of tuples (hostname, Nprocessor)
+        @return A list of tuples (hostname, Nprocessor)
         """
         result = []
         for host in self.hosts:
@@ -391,9 +393,16 @@ class ThreadHost(threading.Thread):
     It is used to declare a list of hosts with multi-threading.
     """
     def __init__(self, hostname):
+        """The constructor.
+        \param hostname A name of host.
+        """
         threading.Thread.__init__(self)
+        ## The host name.
         self.hostname = hostname
     def run(self):
+        """Runs the thread.
+        """
+        ## The 'host' instance.
         self.host_instance = host.Host(self.hostname)
 
 
@@ -403,10 +412,18 @@ class ThreadUptime(threading.Thread):
     multi-threading.
     """
     def __init__(self, host):
+        """The constructor.
+        \param host A 'host.Host' instance.
+        """
         threading.Thread.__init__(self)
+        ## The 'host' instance.
         self.host = host
+        ## The host name.
         self.hostname = self.host.name
     def run(self):
+        """Runs the thread.
+        """
+        ## A list of floats or a string if the connection failed.
         self.uptime = self.host.GetUptime()
 
 
@@ -416,10 +433,18 @@ class ThreadUsedMemory(threading.Thread):
     multi-threading.
     """
     def __init__(self, host):
+        """The constructor.
+        \param host A 'host.Host' instance.
+        """
         threading.Thread.__init__(self)
+        ## The 'host' instance.
         self.host = host
+        ## The host name.
         self.hostname = self.host.name
     def run(self):
+        """Runs the thread.
+        """
+        ## An integer or a string if the connection failed.
         self.used_memory = self.host.GetUsedMemory()
 
 
