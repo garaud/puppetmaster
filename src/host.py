@@ -380,19 +380,30 @@ class Host:
         file_tmp.close()
         file_name = "/tmp/output-" + str(file_index)
         os.chmod(file_name, 0600)
-        command = "( " + command + "; ) &> " + file_name
-        p = popen2.Popen4(command)
+        # Command name.
+        if self.name == socket.gethostname():
+            command = command +" &> " + file_name
+        else:
+            command = self.ssh + self.name + ' '\
+                + command + " &> " + file_name
+        # Launches subprocess.
+        p = subprocess.Popen([command], shell=True)
+        # Limit time and waiting time.
         t = time.time()
-        while (p.poll() == -1 and time.time() - t < ltime):
+        while (p.poll() == None and time.time() - t < ltime):
             time.sleep(wait)
-        s = p.poll()
-        if s == -1:
+        # If the process is not done, try to kill it.
+        if p.poll() == None:
+            status = 1
             try:
                 os.kill(p.pid, 9)
             except:
                 pass
+        else:
+            status = p.poll()
+        # Reads the output.
         file_tmp = open(file_name, 'r')
-        o = file_tmp.read()
+        out = file_tmp.read()
         file_tmp.close()
         os.remove(file_name)
-        return (s, o)
+        return (status, out)
