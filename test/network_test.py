@@ -155,9 +155,17 @@ class NetworkTestCase(unittest.TestCase):
     def testLaunchCommand(self):
         import random
         # For the local host.
+        status = self.net_local.LaunchInt(self.command)
+        statusout = self.net_local.LaunchFG(self.command)
         popen4_instance = self.net_local.LaunchBG(self.command)
         subproc = self.net_local.LaunchSubProcess(self.command)
+        # Checks type.
+        self.assertTrue(isinstance(status, int))
+        self.assertTrue(isinstance(statusout, tuple))
+        self.assertTrue(isinstance(statusout[0], int))
         # The status must be '0'.
+        self.assertTrue(status == 0)
+        self.assertTrue(statusout[0] == 0)
         self.assertTrue(popen4_instance.wait() == 0)
         self.assertTrue(subproc.wait() == 0)
 
@@ -166,12 +174,23 @@ class NetworkTestCase(unittest.TestCase):
             index = random.randint(0, self.net.GetNhost() - 1)
             random_host = self.net.hosts[index]
             # Launches the command.
+            status = self.net.LaunchInt(self.command + ' 2>/dev/null',
+                                        random_host)
+            statusout = self.net.LaunchFG(self.command, random_host)
             popen4_instance = self.net.LaunchBG(self.command, random_host)
             subproc = self.net.LaunchSubProcess(self.command, random_host)
+            # Checks type.
+            self.assertTrue(isinstance(status, int))
+            self.assertTrue(isinstance(statusout, tuple))
+            self.assertTrue(isinstance(statusout[0], int))
             # The status must be '0' if the connection dit not fail.
             if random_host.connection:
+                self.assertTrue(status == 0)
+                self.assertTrue(statusout[0] == 0)
                 self.assertTrue(popen4_instance.wait() == 0)
                 self.assertTrue(subproc.wait() == 0)
             else:
+                self.assertTrue(status != 0)
+                self.assertTrue(statusout[0] != 0)
                 self.assertTrue(popen4_instance.wait() != 0)
                 self.assertTrue(subproc.wait() != 0)
