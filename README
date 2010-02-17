@@ -4,9 +4,9 @@ README for PuppetMaster.
 About
 ----- 
 
-This project contains 2 Python modules ('./src/network.py' and
-'./src/program_manager.py'). They can be useful if you would like to launch
-several programs on remote hosts.
+This project contains 3 Python modules ('./src/host.py', './src/network.py'
+and './src/program_manager.py'). They can be useful if you would like to know
+the load on remotes hosts or launch several programs on remote hosts.
 
 
 ------------
@@ -15,54 +15,39 @@ Requirements
 
 These modules were written under Python version 2.5.
 
-1. You have to install 'dsh'. It can be downloaded from this
-   website: http://www.netfort.gr.jp/~dancer/software/downloads/list.cgi 
-   It is an implementation of a wrapper for executing multiple remote shell
-   (rsh, remsh, ssh) commands. 'man dsh' for help.
-
-2. You must create these directories:
-   mkdir ~/.dsh
-   mkdir ~/.dsh/group
-
-3. You must write the names of hosts in a file.
-   For instance in ~/.dsh/group/all:
-   node001
-   node002
-   node003
-   node004
-
-4. You can test the following commands in a terminal:
-      dsh -r ssh -Mc -g all 'echo `uptime`'
-   to get the 'uptime' for each host. Or
-      dsh -r ssh -Mc -g all 'cat /proc/cpuinfo | grep ^processor | wc -l'
-   to have the number of processors for each host.
-
 
 ------------
 Installation
 ------------
 
-Just move or link the modules './src/network.py' and
-'./src/program_manager.py' to a path which appears in your PYTHONPATH variable
-(for instance '~/usr/lib/python').
+Assume you have a directory which is defined in your PYTHONPATH. For instance
+'$HOME/usr/lib/python'. Go to this directory and do:
 
-OR
+ln -s /path/to/puppetmaster/src puppetmaster
 
-Add '/path/to/puppetmaster/src/' to your PYTHONPATH variable.
-
-Then, you just do 'import network' and 'import program_manager' in a Python
-script.
+Then, you just do 'from puppetmaster import *' in a Python script.
 
 
 ----
 Test
 ----
 
+First, you can create a file where you specify the name of each remote
+hosts. For instance:
+       node001
+       node002
+       node003
+       node004
+
 You can launch 'python remote_hosts_test.py' in the directory './test' to know
-if you do not have any access problem. You can try too:
+if you do not have any access problem.
+
+ You can try too:
     cd ./test
-    python tests.py
-It checks the modules 'network.py' and 'program_manager.py'.
+    python tests.py -m MODULE_NAME
+It checks the modules 'MODULE_NAME'. You can also do:
+    python tests.py -m all -f host_file
+It checks every module for a list of hosts defined in the file 'host_file'.
 
 Moreover, you have a few scripts in './example':
     - program.py
@@ -78,6 +63,13 @@ code. You can also generate the documentation with Doxygen in the directory
 './doc'. Read './doc/REAMDE' for more explanations.
 
 
+-------
+License
+-------
+
+This project is under GPLv2. See the file LICENSE.
+
+
 --------
 Contacts
 --------
@@ -85,4 +77,4 @@ Contacts
 Damien Garaud: damien.garaud@inria.fr
 
 
-# Latest version: 17 June 2009
+# Latest version: 17 February 2010
