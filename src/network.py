@@ -296,7 +296,7 @@ class Network:
         return self.GetAvailableHosts()
 
 
-    def LaunchBG(self, command, host_):
+    def LaunchBG(self, command, host_ = socket.gethostname()):
         """Launches a command in the background.
         \param command The name of the command.
         \param host_ The name of the host or a 'host.Host' instance.
@@ -316,7 +316,7 @@ class Network:
             return host_.LaunchBG(command)
 
 
-    def LaunchSubProcess(self, command, host_):
+    def LaunchSubProcess(self, command, host_ = socket.gethostname()):
         """Launches a command in the background with the module 'subprocess'.
         The standard output and error can be called with
         'subprocess.Popen.communicate()' method when the process terminated.
