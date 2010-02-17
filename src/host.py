@@ -386,10 +386,10 @@ class Host:
         os.chmod(file_name, 0600)
         # Command name.
         if self.name == socket.gethostname():
-            command = command +" &> " + file_name
+            command = command +" 1> " + file_name
         else:
             command = self.ssh + self.name + ' '\
-                + command + " &> " + file_name
+                + command + " 1> " + file_name
         # Launches subprocess.
         p = subprocess.Popen([command], shell=True)
         # Limit time and waiting time.
