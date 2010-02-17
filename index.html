@@ -35,56 +35,115 @@
   </head>
 
 <body>
-  <a href="http://github.com/garaud/puppetmaster"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+  <a href="http://github.com/garaud/puppetmaster"><img style="position:
+  absolute; top: 0; right: 0; border: 0;"
+  src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"
+  alt="Fork me on GitHub" /></a>
   
   <div id="container">
 
     <div class="download">
       <a href="http://github.com/garaud/puppetmaster/zipball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
+        <img border="0" width="90"
+             src="http://github.com/images/modules/download/zip.png" /></a>
       <a href="http://github.com/garaud/puppetmaster/tarball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
+        <img border="0" width="90"
+             src="http://github.com/images/modules/download/tar.png" /></a>
     </div>
       
     <h1><a href="http://github.com/garaud/puppetmaster">PuppetMaster</a> 
       <span class="small">by <a href="http://github.com/garaud">garaud</a></span></h1>
 
     <div class="description">
-      Provides facilities to deal with computations on a Linux network.
+      Provides facilities to deal with computations on a Linux
+      network.<br/>
+      <ul>
+        <li>Get some useful information about a network of hosts such as:
+          <ul>
+            <li>number of cores</li>
+            <li>system load averages</li>
+            <li>total system memory</li>
+            <li>current used memory</li>
+            <li>available hosts with respect to the load and the number of
+            cores</li>
+          </ul>
+        </li>
+        <li>Take advantage of multi-threading to get some network information
+        faster.</li>
+        <li>Launch several different commands on a network automatically (via
+        SSH)</li>
+      </ul>
     </div>
 
     <h2>Install</h2>
-        <p>You must have Python.<br/>Moreover, you have to
-          install <tt>dsh</tt>. It runs command on multiple nodes and hardware
-          devices
-          (<a href="http://www.netfort.gr.jp/~dancer/software/downloads/list.cgi"
-          alt="">website</a>).
-        </p>
-        <h2>License</h2>
-        <p>GNU GPL (General Public License)</p>
-        <h2>Authors</h2>
-        <p>Damien Garaud<br/>Vivien Mallet</p>
-        <h2>Contact</h2>
-        <p> (damien.garaud@inria.fr)<br/></p>
+    <p>
+      You must have Python (<a href="http://www.python.org/"
+                               target="_blank">official website</a>).
+      This project was tested with the Python version 2.5.2<br/>
+      Download the project and go to a directory which is specified in
+      the <code>PYTHONPATH</code> shell variable. Then, just do
+      <pre>$ ln -s /path/to/puppetmaster/src puppetmaster</pre> You can
+      import the module in a Python script with <code>from puppetmaster
+      import *</code>
+    </p>
 
+    <h2>Quickstart</h2>
+    <p>In a Python environment, do
+      <pre>
+     >>> from puppetmaster import *
+     >>> h = Host()
+     >>> h.GetProcessorNumber()
+     2
+     >>>
+     >>> h.GetUptime()
+     [0.102, 0.12, 0.089]
+     >>>
+     >>> h.LaunchFG('pwd')
+     (0, '/home/login/puppetmaster/src')
+     >>>
+     >>> subproc = h.LaunchSubProccess('pwd')
+     >>> subproc.wait()
+     0
+     >>> subproc.communicate()[0]
+     '/home/login/puppetmaster/src\n'
+     >>>
+      </pre>
+      You can get some information about your host and can launch foreground
+      command or <code>subprocess.Popen</code> object.
+    </p>
+
+    <h2>License</h2>
+    <p>
+    GNU GPL (General Public License), version 2
+    </p>
+
+    <h2>Authors</h2>
+    <p>
+      <ul>
+        <li>Damien Garaud</li>
+        <li>Vivien Mallet</li>
+      </ul>
+    </p>
+
+    <h2>Contact</h2>
+    <a href="mailto:damien.garaud@inria.fr">damien.garaud@inria.fr</a><br/>
 
     <h2>Download</h2>
     <p>
       You can download this project in either
-      <a href="http://github.com/garaud/puppetmaster/zipball/master">zip</a> or
-      <a href="http://github.com/garaud/puppetmaster/tarball/master">tar</a> formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
+      <a href="http://github.com/garaud/puppetmaster/zipball/master">zip</a>
+      or <a href="http://github.com/garaud/puppetmaster/tarball/master">tar</a>
+      formats.
+      You can also clone the project with <a href="http://git-scm.com">Git</a>
       by running:
       <pre>$ git clone git://github.com/garaud/puppetmaster</pre>
     </p>
-      
-    <div class="footer">
-      get the source code on GitHub : <a href="http://github.com/garaud/puppetmaster">garaud/puppetmaster</a>
-    </div>
-    
-  </div>
 
+    <div class="footer">
+      get the source code on GitHub
+      : <a href="http://github.com/garaud/puppetmaster">garaud/puppetmaster</a>
+    </div> <!-- end description -->
+  </div> <!-- end container -->
   
 </body>
 </html>
