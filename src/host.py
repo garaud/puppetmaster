@@ -376,38 +376,32 @@ class Host:
         @return The output and the status of the command in a tuple.
         """
         import time
-        # Output is redirected.
-        file_index = 0
-        while os.path.exists("/tmp/output-" + str(file_index)):
-            file_index += 1
-        file_tmp = open("/tmp/output-" + str(file_index), 'w')
-        file_tmp.close()
-        file_name = "/tmp/output-" + str(file_index)
-        os.chmod(file_name, 0600)
-        # Command name.
+        # Launches a subprocess.
         if self.name == socket.gethostname():
-            command = command +" 1> " + file_name
+            subproc = subprocess.Popen([command], shell=True,
+                                       stdout=subprocess.PIPE,
+                                       stderr=subprocess.PIPE)
         else:
-            command = self.ssh + self.name + ' '\
-                + command + " 1> " + file_name
-        # Launches subprocess.
-        p = subprocess.Popen([command], shell=True)
+            subproc = subprocess.Popen([self.ssh + self.name + ' ' + command],
+                                       shell=True,
+                                       stdout=subprocess.PIPE,
+                                       stderr=subprocess.PIPE)
         # Limit time and waiting time.
         t = time.time()
-        while (p.poll() == None and time.time() - t < ltime):
+        while (subproc.poll() == None and time.time() - t < ltime):
             time.sleep(wait)
         # If the process is not done, try to kill it.
-        if p.poll() == None:
+        if subproc.poll() == None:
             status = 1
             try:
-                os.kill(p.pid, 9)
+                os.kill(subproc.pid, 9)
             except:
                 pass
         else:
-            status = p.poll()
-        # Reads the output.
-        file_tmp = open(file_name, 'r')
-        out = file_tmp.read()
-        file_tmp.close()
-        os.remove(file_name)
-        return (status, out)
+            status = subproc.poll()
+        # Returns the output.
+        if status == 0:
+            return (status, subproc.communicate()[0])
+        else:
+            std_output = subproc.communicate()
+            return (status, std_output[0] + std_output[1])
