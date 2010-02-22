@@ -88,10 +88,13 @@ print("""\n
 ########################""")
 
 # Declaration.
+group_ = 0
 command_list = ['/bin/ls', '/bin/pwd', '/bin/ps']
 program_ensemble = program_manager.ProgramManager()
-for prg in command_list:
+for name in command_list:
+    prg = program_manager.Program(name, group = group_)
     program_ensemble.AddProgram(prg)
+    group_ += 1
 
 # Runs the ensemble of programs.
 print 'Runs.'
