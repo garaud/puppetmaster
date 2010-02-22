@@ -115,10 +115,12 @@ class ProgramManager:
                       + "\" failed."
 
 
-    def RunNetwork(self, delay = 2., wait_time = 10.):
+    def RunNetwork(self, delay = 2., buzy_time = 10., wait_time = 10.):
         """Executes the set of programs on the network.
         \param delay The minimum period of time between the launching of two
         programs. Unit: seconds.
+        \param buzy_time The waiting time before checking a new available
+        hosts.
         \param wait_time The waiting time before the end of a group of
         programs.
         """
@@ -160,17 +162,12 @@ class ProgramManager:
                               in range(len(Ncpu_list))]
             # If all hosts are busy.
             if count_program > Ncpu:
-                host_available = self.net.BusySoWait(40.)
-                Ncpu_list = [x[1] for x in host_available]
-                Ncpu = sum(Ncpu_list)
-                cpu_cumsum = [sum(Ncpu_list[0:x + 1]) for x \
-                              in range(len(Ncpu_list))]
+                time.sleep(buzy_time)
+                host_available = self.net.BusySoWait(buzy_time)
                 count_host = 0
                 count_program = 1
-                while Ncpu == 0:
-                    host_available = self.net.BusySoWait(40.)
-                    Ncpu_list = [x[1] for x in host_available]
-                    Ncpu = sum(Ncpu_list)
+                Ncpu_list = [x[1] for x in host_available]
+                Ncpu = sum(Ncpu_list)
                 cpu_cumsum = [sum(Ncpu_list[0:x + 1]) for x \
                               in range(len(Ncpu_list))]
 
