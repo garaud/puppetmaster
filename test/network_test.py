@@ -159,15 +159,18 @@ class NetworkTestCase(unittest.TestCase):
         statusout = self.net_local.LaunchFG(self.command)
         popen4_instance = self.net_local.LaunchBG(self.command)
         subproc = self.net_local.LaunchSubProcess(self.command)
+        wait_return = self.net_local.LaunchWait(self.command, 2., 0.2)
         # Checks type.
         self.assertTrue(isinstance(status, int))
         self.assertTrue(isinstance(statusout, tuple))
         self.assertTrue(isinstance(statusout[0], int))
+        self.assertTrue(isinstance(wait_return, tuple))
         # The status must be '0'.
         self.assertTrue(status == 0)
         self.assertTrue(statusout[0] == 0)
         self.assertTrue(popen4_instance.wait() == 0)
         self.assertTrue(subproc.wait() == 0)
+        self.assertTrue(wait_return[0] == 0)
 
         # For a random host.
         if self.is_file:
@@ -179,18 +182,23 @@ class NetworkTestCase(unittest.TestCase):
             statusout = self.net.LaunchFG(self.command, random_host)
             popen4_instance = self.net.LaunchBG(self.command, random_host)
             subproc = self.net.LaunchSubProcess(self.command, random_host)
+            wait_return = self.net.LaunchWait(self.command, 2., 0.2,
+                                              random_host)
             # Checks type.
             self.assertTrue(isinstance(status, int))
             self.assertTrue(isinstance(statusout, tuple))
             self.assertTrue(isinstance(statusout[0], int))
+            self.assertTrue(isinstance(wait_return, tuple))
             # The status must be '0' if the connection dit not fail.
             if random_host.connection:
                 self.assertTrue(status == 0)
                 self.assertTrue(statusout[0] == 0)
                 self.assertTrue(popen4_instance.wait() == 0)
                 self.assertTrue(subproc.wait() == 0)
+                self.assertTrue(wait_return[0] == 0)
             else:
                 self.assertTrue(status != 0)
                 self.assertTrue(statusout[0] != 0)
                 self.assertTrue(popen4_instance.wait() != 0)
                 self.assertTrue(subproc.wait() != 0)
+                self.assertTrue(wait_return[0] != 0)
