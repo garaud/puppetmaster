@@ -384,6 +384,30 @@ class Network:
             return host_.LaunchSubProcess(command)
 
 
+    def LaunchWait(self, command, ltime, wait = 0.1,
+                   host_ = socket.gethostname()):
+        """Launches a command in the background and waits for its output for a
+        given time after which the process is killed.
+        \param ltime The limit time.
+        \param wait The waiting time.
+        \param command The name of the command.
+        \param host_ The name of the host or a 'host.Host' instance.
+        @return The output and the status of the command in a tuple.
+        """
+        import os
+        if isinstance(host_, str):
+            if host_ not in [x.name for x in self.hosts]:
+                raise ValueError, "The host name '%s' not found " % host_ \
+                    + "in the list of hosts."
+            index = [x.name for x in self.hosts].index(host_)
+            return self.hosts[index].LaunchWait(command, ltime, wait)
+        if isinstance(host_, host.Host):
+            if host_.name not in [x.name for x in self.hosts]:
+                raise ValueError, "The host name '%s' not " % host_.name \
+                    + "found in the list of hosts."
+            return host_.LaunchWait(command, ltime, wait)
+
+
 ###################
 # THREADING CLASS #
 ###################
