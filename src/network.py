@@ -408,6 +408,56 @@ class Network:
             return host_.LaunchWait(command, ltime, wait)
 
 
+    def SendMail(self, subject, fromaddr, toaddr, msg = ""):
+        """Sends a mail.
+        \param subject The subject
+        \param fromaddr The email address of the sender.
+        \param toaddr The email address of the recipient.
+        \param msg The message.
+        """
+        from email.MIMEText import MIMEText
+        msg = MIMEText(msg)
+        msg['Subject'] = subject
+        msg['From'] = fromaddr
+        msg['To'] = toaddr
+        import smtplib
+        server = smtplib.SMTP('localhost')
+        server.sendmail(fromaddr, toaddr, msg.as_string())
+        server.quit()
+
+
+    def SendMailAttach(self, subject, attachments, fromaddr, toaddr,
+                       msg = ""):
+        """Sends a mail with attachments.
+        \param subject The subject
+        \param attachments A file or a list of files.
+        \param fromaddr The email address of the sender.
+        \param toaddr The email address of the recipient.
+        \param msg The message.
+        """
+        from email.MIMEMultipart import MIMEMultipart
+        from email.MIMEText import MIMEText
+        tmp = MIMEMultipart()
+        tmp.attach(MIMEText(msg))
+        msg = tmp
+        msg['Subject'] = subject
+        msg['From'] = fromaddr
+        msg['To'] = toaddr
+        if type(attachments) == types.StringType:
+            file = open(attachments, 'rb')
+            msg.attach(MIMEText(file.read()))
+            file.close()
+        else:
+            for attachment in attachments:
+                file = open(attachment, 'rb')
+                msg.attach(MIMEText(file.read()))
+                file.close()
+        import smtplib
+        server = smtplib.SMTP('localhost')
+        server.sendmail(fromaddr, toaddr, msg.as_string())
+        server.quit()
+
+
 ###################
 # THREADING CLASS #
 ###################
