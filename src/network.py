@@ -98,7 +98,7 @@ class Network:
     """
 
 
-    def __init__(self, host_list = None):
+    def __init__(self, host_list = None, forced_ssh_config = False):
         """Initiliazes the list of hosts.
         \param host_list A list of host instances, host names or a file.
         """
@@ -106,14 +106,14 @@ class Network:
         ## The hosts list.
         self.hosts = []
 
-        self.CheckArgument(host_list)
+        self.CheckArgument(host_list, forced_ssh_config)
 
         # Empty connected hosts list?
         if self.GetConnectedHostNumber() == 0:
             raise ValueError, "The list of connected hosts list is empty."
 
 
-    def CheckArgument(self, host_list):
+    def CheckArgument(self, host_list, forced_ssh_config):
         """Checks the argument.
         \param host_list A list of host instances, host names or a file.
         """
@@ -126,7 +126,7 @@ class Network:
             if len(host_list) == 0:
                 raise ValueError, "The hosts list is empty."
             if isinstance(host_list[0], str):
-                self.GetThreadHost(host_list)
+                self.GetThreadHost(host_list, forced_ssh_config)
             elif isinstance(host_list[0], host.Host):
                 for instance in host_list:
                     self.hosts.append(instance)
@@ -144,7 +144,7 @@ class Network:
                 host_list = []
                 for hostname in out:
                     host_list.append(hostname.strip())
-                self.GetThreadHost(host_list)
+                self.GetThreadHost(host_list, forced_ssh_config)
             else:
                 raise ValueError, "The file '%s' not found." % host_list
         else:
@@ -208,7 +208,7 @@ class Network:
         return result
 
 
-    def GetThreadHost(self, host_list):
+    def GetThreadHost(self, host_list, forced_ssh_config = False):
         """Creates 'host.Host' instances with multi-threading.
         \param host_list A list of host names.
         """
@@ -216,7 +216,7 @@ class Network:
         # Launches all threads.
         for hostname in host_list:
             if len(hostname) != 0:
-                thread_host = ThreadHost(hostname)
+                thread_host = ThreadHost(hostname, forced_ssh_config)
                 processus_list.append(thread_host)
                 thread_host.start()
         # Gets the results.
@@ -466,18 +466,22 @@ class ThreadHost(threading.Thread):
     """A derived class of 'threading.Thread'.
     It is used to declare a list of hosts with multi-threading.
     """
-    def __init__(self, hostname):
+    def __init__(self, hostname, forced_ssh_config = False):
         """The constructor.
         \param hostname A name of host.
+        \param forced_ssh_config Would like to use the PuppetMaster SSH
+        configuration? (True or False). See the variable '_sshconfig_'.
         """
         threading.Thread.__init__(self)
         ## The host name.
         self.hostname = hostname
+        ## PuppetMaster SSH configuration?
+        self.forced_ssh_config = forced_ssh_config
     def run(self):
         """Runs the thread.
         """
         ## The 'host' instance.
-        self.host_instance = host.Host(self.hostname)
+        self.host_instance = host.Host(self.hostname, self.forced_ssh_config)
 
 
 class ThreadUptime(threading.Thread):
