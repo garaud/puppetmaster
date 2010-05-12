@@ -349,22 +349,40 @@ class Host:
                                  " \"" + command + "\"")
 
 
-    def LaunchSubProcess(self, command):
+    def LaunchSubProcess(self, command, with_stdout = False):
         """Launches a command in the background with the module 'subprocess'.
         The standard output and error can be called with
         'subprocess.Popen.communicate()' method when the process terminated.
         \param command The name of the command.
+        \param with_stdout True or False. Writes the standard output in the
+        'subprocess.PIPE' or in '/dev/null'.
         @return A 'subprocess.Popen' instance.
         """
+        # If host is the local host.
         if self.name == socket.gethostname():
-            return subprocess.Popen([command], shell=True,
-                                    stdout=subprocess.PIPE,
-                                    stderr=subprocess.PIPE)
+            if with_stdout:
+                return subprocess.Popen([command], shell = True,
+                                        stdout = subprocess.PIPE,
+                                        stderr = subprocess.PIPE)
+            else:
+                return subprocess.Popen([command], shell = True,
+                                        stdout = os.open(os.devnull,
+                                                         os.O_RDWR),
+                                        stderr = subprocess.PIPE)
         else:
-            return subprocess.Popen([self.ssh + self.name + ' ' + command],
-                                    shell=True,
-                                    stdout=subprocess.PIPE,
-                                    stderr=subprocess.PIPE)
+            if with_stdout:
+                return subprocess.Popen([self.ssh + self.name
+                                         + ' ' + command],
+                                        shell = True,
+                                        stdout = subprocess.PIPE,
+                                        stderr = subprocess.PIPE)
+            else:
+                return subprocess.Popen([self.ssh + self.name
+                                         + ' ' + command],
+                                        shell = True,
+                                        stdout = os.open(os.devnull,
+                                                         os.O_RDWR),
+                                        stderr = subprocess.PIPE)
 
 
     def LaunchWait(self, command, ltime, wait = 0.1):
