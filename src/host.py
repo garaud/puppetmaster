@@ -103,8 +103,11 @@ class Host:
         """The destructor.
         Deletes the temporary SSH configuration file.
         """
-        if os.path.isfile('/tmp/ssh-config-puppet'):
-            os.remove('/tmp/ssh-config-puppet')
+        try:
+            if os.path.isfile('/tmp/ssh-config-puppet'):
+                os.remove('/tmp/ssh-config-puppet')
+        except:
+            pass
 
 
     def CheckArgument(self, host):
