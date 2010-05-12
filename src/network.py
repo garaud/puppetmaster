@@ -362,7 +362,8 @@ class Network:
             return host_.LaunchBG(command)
 
 
-    def LaunchSubProcess(self, command, host_ = socket.gethostname()):
+    def LaunchSubProcess(self, command, host_ = socket.gethostname(),
+                         with_stdout = False):
         """Launches a command in the background with the module 'subprocess'.
         The standard output and error can be called with
         'subprocess.Popen.communicate()' method when the process terminated.
