@@ -124,7 +124,7 @@ class ProgramManager:
         \param wait_time The waiting time before the end of a group of
         programs.
         """
-        import time, commands
+        import time, commands, copy
         if len(self.program_list) == 0:
             raise Exception, "The program list is empty."
         self.process = []
@@ -145,9 +145,16 @@ class ProgramManager:
         for i in range(len(self.program_list)):
             program = self.program_list[i]
             program.config.Proceed()
+        self.log += "Available host %s\n" % str(host_available)
+        self.log += "Cumulative sum %s\n" % str(cpu_cumsum)
+        self.log += "Ncpu %s\n" % Ncpu
         # Program runs on Network.
         for i in range(len(self.program_list)):
             program = self.program_list[i]
+            self.log += '-' * 78 + '\n'
+            self.log += "Program index %i\n" % i
+            self.log += "Program Command '%s'\n" % program.Command()
+            self.log += "First index program Group '%i'\n" % i_group
             if i > i_group and program.group != self.program_list[i-1].group:
                 # If any process from the previous group is still up.
                 while None in [x.poll() for x in self.process[i_group:]]:
@@ -162,6 +169,7 @@ class ProgramManager:
                               in range(len(Ncpu_list))]
             # If all hosts are busy.
             if count_program > Ncpu:
+                self.log += " --- Host Busy ---\n"
                 time.sleep(buzy_time)
                 host_available = self.net.BusySoWait(buzy_time)
                 count_host = 0
@@ -170,16 +178,29 @@ class ProgramManager:
                 Ncpu = sum(Ncpu_list)
                 cpu_cumsum = [sum(Ncpu_list[0:x + 1]) for x \
                               in range(len(Ncpu_list))]
+                self.log += "\tNew hosts list.\n"
+                self.log += '\t' + str(host_available) + ' \n'
+                self.log += "\tcpu_cum_sum %s\n" % str(cpu_cumsum)
+                self.log += "\tNcpu %i\n" % Ncpu
+                self.log += " --- End Host Busy ---\n"
 
             # Changes host.
+            self.log += "Count program %i\n" % count_program
+            self.log += "Count host %i\n" % count_host
+            self.log += "Length cpu_cumsum %i\n" % len(cpu_cumsum)
+            self.log += "Index cpu cumulative sum %i\n" % cpu_cumsum[count_host]
             if count_program > cpu_cumsum[count_host]:
                 count_host += 1
+                self.log += "Changed Host."
+                self.log += "Count host %i\n" % count_host
             current_host = host_available[count_host][0]
+            self.log += "Current host name '%s'\n" % current_host
 
             # Launches the subprocess.
             print "Program: ", program.basename, \
                 " - Available host: ", current_host
             p = self.net.LaunchSubProcess(program.Command(), current_host)
+            self.log += "Sub-program with the ID %i\n" % p.pid
             self.process.append(p)
             count_program += 1
             host.append(current_host)
@@ -191,24 +212,35 @@ class ProgramManager:
                     end_time[j] = time.asctime()
 
             # Checks current process status.
-            i_proc = i_group
+            i_proc = copy.copy(i_group)
             for subproc in self.process[i_group:]:
                 if subproc.poll() != None and subproc.wait() != 0:
                     std_message = subproc.communicate()
                     raise Exception, "The program: \"" \
                         + self.program_list[i_proc].Command() \
-                          + "\" does not work.\n" \
+                          + "\" does not work on the host '" \
+                          + host[i_proc]  + "'.\n"\
                           + "status: " + str(subproc.wait()) \
                           + "\n\nOutput message:" \
-                          + " \n  STDOUT: " + std_message[0] \
+                          + " \n  STDOUT: " + str(std_message[0]) \
                           + " \n  STDERR: " + std_message[1]
                 i_proc += 1
             # Wainting time.
             time.sleep(delay)
+        # End for program launching.
 
         # Waits for the latest programs.
+        self.log += "\nWaits for the lastet programs.\n"
+        self.log += "First index program Group '%i'\n" % i_group
+        #while None in [x.returncode for x in self.process[i_group:]]:
+        count_wait = 0
         while None in [x.poll() for x in self.process[i_group:]]:
             time.sleep(delay)
+            count_wait += 1
+            self.log += "Clock: " + time.asctime() + "\n"
+            self.log += "Number of waiting time: " + str(count_wait) + "\n"
+            self.log += str([x.poll() for x in self.process[i_group:]]) + "\n"
+        self.log += "All sub programs are done.\n"
 
         # Writes the ended date.
         for j in range(len(self.program_list)):
@@ -225,11 +257,12 @@ class ProgramManager:
                     + "\" does not work.\n" \
                     + "status: " + str(subproc.wait()) \
                     + "\n\nOutput message:" \
-                    + " \n  STDOUT: " + std_message[0] \
+                    + " \n  STDOUT: " + str(std_message[0]) \
                     + " \n  STDERR: " + std_message[1]
             i_proc += 1
 
         # Writes the log.
+        self.log += '-' * 78 + '\n'
         i_group = 0
         for i in range(len(self.program_list)):
             program = self.program_list[i]
