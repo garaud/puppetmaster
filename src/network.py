@@ -101,6 +101,8 @@ class Network:
     def __init__(self, host_list = None, forced_ssh_config = False):
         """Initiliazes the list of hosts.
         \param host_list A list of host instances, host names or a file.
+        \param forced_ssh_config Would like to use the PuppetMaster SSH
+        configuration? (True or False). See the variable 'host._sshconfig_'.
         """
 
         ## The hosts list.
@@ -116,6 +118,8 @@ class Network:
     def CheckArgument(self, host_list, forced_ssh_config):
         """Checks the argument.
         \param host_list A list of host instances, host names or a file.
+        \param forced_ssh_config Would like to use the PuppetMaster SSH
+        configuration? (True or False). See the variable 'host._sshconfig_'.
         """
         # The local host by default.
         if host_list == None:
@@ -211,6 +215,8 @@ class Network:
     def GetThreadHost(self, host_list, forced_ssh_config = False):
         """Creates 'host.Host' instances with multi-threading.
         \param host_list A list of host names.
+        \param forced_ssh_config Would like to use the PuppetMaster SSH
+        configuration? (True or False). See the variable 'host._sshconfig_'.
         """
         processus_list = []
         # Launches all threads.
@@ -369,6 +375,10 @@ class Network:
         'subprocess.Popen.communicate()' method when the process terminated.
         \param command The name of the command.
         \param host_ The name of the host or a 'host.Host' instance.
+        \param with_stdout Does the standard output write in the
+        'subprocess.PIPE'? Be careful, if the standard output is too long, the
+        PIPE will be full and the subprocess will stop (not be killed, but
+        just stop).
         @return A 'subprocess.Popen' instance.
         """
         import os
@@ -471,7 +481,7 @@ class ThreadHost(threading.Thread):
         """The constructor.
         \param hostname A name of host.
         \param forced_ssh_config Would like to use the PuppetMaster SSH
-        configuration? (True or False). See the variable '_sshconfig_'.
+        configuration? (True or False). See the variable 'host._sshconfig_'.
         """
         threading.Thread.__init__(self)
         ## The host name.
