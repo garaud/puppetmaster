@@ -387,7 +387,7 @@ class Network:
                 raise ValueError, "The host name '%s' not found " % host_ \
                     + "in the list of hosts."
             index = [x.name for x in self.hosts].index(host_)
-            return self.hosts[index].LaunchSubProcess(command, wiht_stdout)
+            return self.hosts[index].LaunchSubProcess(command, with_stdout)
         if isinstance(host_, host.Host):
             if host_.name not in [x.name for x in self.hosts]:
                 raise ValueError, "The host name '%s' not " % host_.name \
