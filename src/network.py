@@ -377,12 +377,12 @@ class Network:
                 raise ValueError, "The host name '%s' not found " % host_ \
                     + "in the list of hosts."
             index = [x.name for x in self.hosts].index(host_)
-            return self.hosts[index].LaunchSubProcess(command)
+            return self.hosts[index].LaunchSubProcess(command, wiht_stdout)
         if isinstance(host_, host.Host):
             if host_.name not in [x.name for x in self.hosts]:
                 raise ValueError, "The host name '%s' not " % host_.name \
                     + "found in the list of hosts."
-            return host_.LaunchSubProcess(command)
+            return host_.LaunchSubProcess(command, with_stdout)
 
 
     def LaunchWait(self, command, ltime, wait = 0.1,
