@@ -1,9 +1,9 @@
-.. sphinxdoc documentation master file, created by
+.. PuppetMaster documentation master file, created by
    sphinx-quickstart on Tue Jun 15 15:56:35 2010.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to sphinxdoc's documentation!
+Welcome to PuppetMaster's documentation!
 =====================================
 
 Contents:
