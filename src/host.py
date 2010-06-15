@@ -14,11 +14,10 @@
 # FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
 # details.
 
-"""\package src.host
+"""
+Provides class ``Host`` designed to manage host.
 
-Provides class 'Host' designed to manage host.
-
-\author Damien Garaud
+author Damien Garaud
 """
 
 import os, sys, commands
@@ -48,9 +47,9 @@ class Host:
                  forced_ssh_config = False):
         """The constructor.
         Initializes the attributes and checks the SSH connection to the host.
-        \param host The name of the host.
-        \param forced_ssh_config Would like to use the PuppetMaster SSH
-        configuration? (True or False). See the variable '_sshconfig_'.
+        ``host`` The name of the host.
+        ``forced_ssh_config`` Would like to use the PuppetMaster SSH
+        configuration? (True or False). See the variable ``_sshconfig_``.
         """
 
         ## Name of the host.
@@ -111,8 +110,9 @@ class Host:
 
 
     def CheckArgument(self, host):
-        """Checks the argument.
-        \param host The name of the host.
+        """
+        Checks the argument::
+            host    # The name of the host.
         """
         # Argument is a string.
         if isinstance(host, str):
