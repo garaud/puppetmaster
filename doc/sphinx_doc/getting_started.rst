@@ -5,109 +5,72 @@
 Getting started
 ***************
 
-.. _installing-docdir:
+.. _get_code:
 
-Installing your doc directory
-=============================
+Get Code
+========
 
-You may already have sphinx `sphinx <http://sphinx.pocoo.org/>`_
-installed -- you can check by doing::
+You can get the PuppetMaster's code via the `Gitorious web site
+<http://gitorious.org>`_.
 
-  python -c 'import sphinx'
+Then, you just do::
 
-If that fails grab the latest version of and install it with::
+  ln -s /path/to/puppetmaster/src puppetmaster
 
-  > sudo easy_install sphinx
-
-Now you are ready to build a template for your docs, using
-sphinx-quickstart::
-
-  > sphinx-quickstart
-
-accepting most of the defaults.  I choose "sampledoc" as the name of my
-project.  cd into your new directory and check the contents::
-
-  home:~/tmp/sampledoc> ls
-  Makefile	_static		conf.py
-  _build		_templates	index.rst
-
-The index.rst is the master ReST for your project, but before adding
-anything, let's see if we can build some html::
-
-  make html
-
-If you now point your browser to :file:`_build/html/index.html`, you
-should see a basic sphinx site.
-
-.. image:: _static/basic_screenshot.png
-
-.. _fetching-the-data:
-
-Fetching the data
------------------
-
-Now we will start to customize out docs.  Grab a couple of files from
-the `web site
-<http://matplotlib.svn.sourceforge.net/viewvc/matplotlib/trunk/sampledoc_tut/>`_
-or svn.  You will need :file:`getting_started.rst` and
-:file:`_static/basic_screenshot.png`.  All of the files live in the
-"completed" version of this tutorial, but since this is a tutorial,
-we'll just grab them one at a time, so you can learn what needs to be
-changed where.  Since we have more files to come, I'm going to grab
-the whole svn directory and just copy the files I need over for now.
-First, I'll cd up back into the directory containing my project, check
-out the "finished" product from svn, and then copy in just the files I
-need into my :file:`sampledoc` directory::
-
-  home:~/tmp/sampledoc> pwd
-  /Users/jdhunter/tmp/sampledoc
-  home:~/tmp/sampledoc> cd ..
-  home:~/tmp> svn co https://matplotlib.svn.sourceforge.net/svnroot/\
-  matplotlib/trunk/sampledoc_tut
-  A    sampledoc_tut/cheatsheet.rst
-  A    sampledoc_tut/_static
-  A    sampledoc_tut/_static/basic_screenshot.png
-  A    sampledoc_tut/conf.py
-  A    sampledoc_tut/Makefile
-  A    sampledoc_tut/_templates
-  A    sampledoc_tut/_build
-  A    sampledoc_tut/getting_started.rst
-  A    sampledoc_tut/index.rst
-  Checked out revision 7449.
-  home:~/tmp> cp sampledoc_tut/getting_started.rst sampledoc/
-  home:~/tmp> cp sampledoc_tut/_static/basic_screenshot.png \
-  sampledoc/_static/
-
-The last step is to modify :file:`index.rst` to include the
-:file:`getting_started.rst` file (be careful with the indentation, the
-"g" in "getting_started" should line up with the ':' in ``:maxdepth``::
-
-  Contents:
-
-  .. toctree::
-     :maxdepth: 2
-
-     getting_started.rst
-
-and then rebuild the docs::
-
-  cd sampledoc
-  make html
+in a directory which appears in your ``PYTHONPATH``.
 
 
-When you reload the page by refreshing your browser pointing to
-:file:`_build/html/index.html`, you should see a link to the
-"Getting Started" docs, and in there this page with the screenshot.
-`Voila!`
+.. _installation:
 
-Note we used the image directive to include to the screenshot above
-with::
+Installation
+============
 
-  .. image:: _static/basic_screenshot.png
+You may already have PuppetMaster installed -- you can check by doing::
+
+  > python -c 'import puppetmaster'
+
+You must not have an error message such as::
+
+  ImportError: No module named puppetmaster
 
 
-Next we'll customize the look and feel of our site to give it a logo,
-some custom css, and update the navigation panels to look more like
-the `sphinx <http://sphinx.pocoo.org/>`_ site itself -- see
-:ref:`custom_look`.
+.. _quickstart:
 
+QuickStart
+==========
+
+.. Line number in the interactive Python code-block (with '>>>') if the number
+.. of lines exceeds 5.
+.. .. highlight:: python
+..    :linenothreshold: 5
+
+1. Create a file with a list of host names such as::
+
+     muadib
+     irulan
+     idaho
+     gesserit
+
+   
+   This file is called ``host_list.txt`` for instance.
+      
+
+2. Open an interactive Python window and do::
+
+     >>> import puppetmaster
+     >>> host = puppetmaster.Host()
+
+   Per default, it takes the local host. Then you can test a few methods::
+
+     >>> host.name
+     'muadib'
+     >>> host.connection
+     True
+     >>> host.GetProcessorNumber()
+     2
+     >>> host.GetUptime()
+     [0.2, 0.12, 0.07]
+   
+   You can also launch different programs via SSH with a ``Host`` instance::
+
+     >>> host.LaunchInt('program')
