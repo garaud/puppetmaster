@@ -299,9 +299,11 @@ class Network:
         @return A list of tuples (hostname, available cpu).
         """
         import time
-        while len(self.GetAvailableHosts()) == 0:
+        host_list = self.GetAvailableHosts()
+        while len(host_list) == 0:
             time.sleep(wait_time)
-        return self.GetAvailableHosts()
+            host_list = self.GetAvailableHosts()
+        return host_list
 
 
     def LaunchInt(self, command, host_ = socket.gethostname()):
