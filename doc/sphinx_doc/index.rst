@@ -12,6 +12,7 @@ Contents:
    :maxdepth: 2
 
    getting_started.rst
+   quickstart.rst
    puppet_class.rst
 
 
