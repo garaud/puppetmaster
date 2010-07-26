@@ -115,7 +115,8 @@ class ProgramManager:
                       + "\" failed."
 
 
-    def RunNetwork(self, delay = 2., buzy_time = 10., wait_time = 10.):
+    def RunNetwork(self, delay = 2., buzy_time = 10., wait_time = 10.,
+                   out_option = None):
         """Executes the set of programs on the network.
         \param delay The minimum period of time between the launching of two
         programs. Unit: seconds.
@@ -123,12 +124,18 @@ class ProgramManager:
         hosts.
         \param wait_time The waiting time before the end of a group of
         programs.
+        \param outoption A string.
+          - None: writes the standard output in '/dev/null'.
+          - 'pipe': writes the standard output in the 'subprocess.PIPE'
+          - 'file': writes the standard output in file such as
+            '/tmp/hostname-erTfZ'.
         """
         import time, commands, copy
         if len(self.program_list) == 0:
             raise Exception, "The program list is empty."
         self.process = []
         host = []
+        self.output_file_list = []
         beg_time = []
         end_time = ["" for i in range(len(self.program_list))]
         # Index of the first program from current group.
@@ -199,7 +206,14 @@ class ProgramManager:
             # Launches the subprocess.
             print "Program: ", program.basename, \
                 " - Available host: ", current_host
-            p = self.net.LaunchSubProcess(program.Command(), current_host)
+            if out_option == 'file':
+                outfile, p = self.net.LaunchSubProcess(program.Command(),
+                                                       current_host,
+                                                       out_option)
+                self.output_file_list.append(outfile)
+            else:
+                p = self.net.LaunchSubProcess(program.Command(),
+                                              current_host)
             self.log += "Sub-program with the ID %i\n" % p.pid
             self.process.append(p)
             count_program += 1
@@ -225,6 +239,14 @@ class ProgramManager:
                         + "\n\nOutput message:" \
                         + " \n  STDOUT: " + str(std_message[0]) \
                         + " \n  STDERR: " + std_message[1]
+                    if out_option == 'file':
+                        warning_message += "\nrSee the file '" \
+                            + self.output_file_list[i_proc].name \
+                            + "' to read the standard output."
+                        try:
+                            self.output_file_list[i_proc].close()
+                        except:
+                            pass
                     self.log += warning_message
                     print warning_message
                     print "\n\rThe other sub-processus are still running...\n"
@@ -264,10 +286,25 @@ class ProgramManager:
                     + "\n\nOutput message:" \
                     + " \n  STDOUT: " + str(std_message[0]) \
                     + " \n  STDERR: " + std_message[1]
+                warning_message += "\nrSee the file '" \
+                    + self.output_file_list[i_proc].name \
+                    + "' to read the standard output."
+                try:
+                    self.output_file_list[i_proc].close()
+                except:
+                    pass
                 self.log += warning_message
                 print warning_message
                 print "\n\rThe other sub-processus are still running...\n"
             i_proc += 1
+
+        # Tries to close all output files.
+        if out_option == 'file':
+            for outfile in self.output_file_list:
+                try:
+                    outfile.close()
+                except:
+                    pass
 
         # Writes the log.
         self.log += '-' * 78 + '\n'

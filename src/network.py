@@ -371,17 +371,21 @@ class Network:
 
 
     def LaunchSubProcess(self, command, host_ = socket.gethostname(),
-                         with_stdout = False):
+                         out_option = None):
         """Launches a command in the background with the module 'subprocess'.
         The standard output and error can be called with
         'subprocess.Popen.communicate()' method when the process terminated.
         \param command The name of the command.
         \param host_ The name of the host or a 'host.Host' instance.
-        \param with_stdout Does the standard output write in the
-        'subprocess.PIPE'? Be careful, if the standard output is too long, the
-        PIPE will be full and the subprocess will stop (not be killed, but
-        just stop).
-        @return A 'subprocess.Popen' instance.
+        \param outo_ption A string.
+          - None: writes the standard output in '/dev/null'.
+          - 'pipe': writes the standard output in the 'subprocess.PIPE'
+          - 'file': writes the standard output in file such as
+            '/tmp/hostname-erTfZ'.
+        Be careful, if the standard output is too long, the PIPE will be full
+        and the subprocess will stop (not be killed, but just stop).
+        @return A 'subprocess.Popen' instance or (file object,
+        subprocess.Popen) when the 'out_option' is set to 'file'.
         """
         import os
         if isinstance(host_, str):
@@ -389,12 +393,12 @@ class Network:
                 raise ValueError, "The host name '%s' not found " % host_ \
                     + "in the list of hosts."
             index = [x.name for x in self.hosts].index(host_)
-            return self.hosts[index].LaunchSubProcess(command, with_stdout)
+            return self.hosts[index].LaunchSubProcess(command, out_option)
         if isinstance(host_, host.Host):
             if host_.name not in [x.name for x in self.hosts]:
                 raise ValueError, "The host name '%s' not " % host_.name \
                     + "found in the list of hosts."
-            return host_.LaunchSubProcess(command, with_stdout)
+            return host_.LaunchSubProcess(command, out_option)
 
 
     def LaunchWait(self, command, ltime, wait = 0.1,

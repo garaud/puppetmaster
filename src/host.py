@@ -352,33 +352,55 @@ class Host:
                                  " \"" + command + "\"")
 
 
-    def LaunchSubProcess(self, command, with_stdout = False):
+    def LaunchSubProcess(self, command, out_option = None):
         """Launches a command in the background with the module 'subprocess'.
         The standard output and error can be called with
         'subprocess.Popen.communicate()' method when the process terminated.
         \param command The name of the command.
-        \param with_stdout True or False. Writes the standard output in the
-        'subprocess.PIPE' or in '/dev/null'.
-        @return A 'subprocess.Popen' instance.
+        \param outo_ption A string.
+          - None: writes the standard output in '/dev/null'.
+          - 'pipe': writes the standard output in the 'subprocess.PIPE'
+          - 'file': writes the standard output in file such as
+            '/tmp/hostname-erTfZ'.
+         @return A 'subprocess.Popen' instance or (file object,
+         subprocess.Popen) when the 'out_option' is set to 'file'.
         """
+        import tempfile
+        # Checks 'out_option'.
+        if out_option not in [None, 'pipe', 'file']:
+            out_option = None
         # If host is the local host.
         if self.name == socket.gethostname():
-            if with_stdout:
+            if out_option == 'pipe':
                 return subprocess.Popen([command], shell = True,
                                         stdout = subprocess.PIPE,
                                         stderr = subprocess.PIPE)
+            elif out_option == 'file':
+                fd, filename = tempfile.mkstemp(prefix = self.name + '-')
+                outfile = open(filename, 'w+')
+                return outfile, subprocess.Popen([command], shell = True,
+                                                 stdout = outfile,
+                                                 stderr = subprocess.STDOUT)
             else:
                 return subprocess.Popen([command], shell = True,
                                         stdout = os.open(os.devnull,
                                                          os.O_RDWR),
                                         stderr = subprocess.PIPE)
         else:
-            if with_stdout:
+            if out_option == 'pipe':
                 return subprocess.Popen([self.ssh + self.name
                                          + ' ' + command],
                                         shell = True,
                                         stdout = subprocess.PIPE,
                                         stderr = subprocess.PIPE)
+            elif out_option == 'file':
+                fd, filename = tempfile.mkstemp(prefix = self.name + '-')
+                outfile = open(filename, 'w+')
+                return outfile, subprocess.Popen([self.ssh + self.name
+                                                  + ' ' + command],
+                                                 shell = True,
+                                                 stdout = outfile,
+                                                 stderr = subprocess.STDOUT)
             else:
                 return subprocess.Popen([self.ssh + self.name
                                          + ' ' + command],
