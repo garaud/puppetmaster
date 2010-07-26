@@ -238,7 +238,7 @@ class ProgramManager:
                         + "status: " + str(subproc.wait()) \
                         + "\n\nOutput message:" \
                         + " \n  STDOUT: " + str(std_message[0]) \
-                        + " \n  STDERR: " + std_message[1]
+                        + " \n  STDERR: " + str(std_message[1])
                     if out_option == 'file':
                         warning_message += "\nrSee the file '" \
                             + self.output_file_list[i_proc].name \
@@ -285,7 +285,7 @@ class ProgramManager:
                     + "status: " + str(subproc.wait()) \
                     + "\n\nOutput message:" \
                     + " \n  STDOUT: " + str(std_message[0]) \
-                    + " \n  STDERR: " + std_message[1]
+                    + " \n  STDERR: " + str(std_message[1])
                 warning_message += "\nrSee the file '" \
                     + self.output_file_list[i_proc].name \
                     + "' to read the standard output."
