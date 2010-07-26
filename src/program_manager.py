@@ -224,7 +224,7 @@ class ProgramManager:
                         + "status: " + str(subproc.wait()) \
                         + "\n\nOutput message:" \
                         + " \n  STDOUT: " + str(std_message[0]) \
-                        + " \n  STDERR: " + std_message[1]
+                        + " \n  STDERR: " + str(std_message[1])
                     self.log += warning_message
                     print warning_message
                     print "\n\rThe other sub-processus are still running...\n"
@@ -263,7 +263,7 @@ class ProgramManager:
                     + "status: " + str(subproc.wait()) \
                     + "\n\nOutput message:" \
                     + " \n  STDOUT: " + str(std_message[0]) \
-                    + " \n  STDERR: " + std_message[1]
+                    + " \n  STDERR: " + str(std_message[1])
                 self.log += warning_message
                 print warning_message
                 print "\n\rThe other sub-processus are still running...\n"
