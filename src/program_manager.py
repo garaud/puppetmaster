@@ -129,6 +129,7 @@ class ProgramManager:
             raise Exception, "The program list is empty."
         self.process = []
         host = []
+        already_dead = [False for i in range(len(self.program_list))]
         beg_time = []
         end_time = ["" for i in range(len(self.program_list))]
         # Index of the first program from current group.
@@ -216,18 +217,21 @@ class ProgramManager:
             # Loop on current running subprocess.
             for subproc in self.process[i_group:]:
                 if subproc.poll() != None and subproc.wait() != 0:
-                    std_message = subproc.communicate()
-                    warning_message = "\n\rWARNING: The program: \"" \
-                        + self.program_list[i_proc].Command() \
-                        + "\" does not work on the host '" \
-                        + host[i_proc]  + "'.\n"\
-                        + "status: " + str(subproc.wait()) \
-                        + "\n\nOutput message:" \
-                        + " \n  STDOUT: " + str(std_message[0]) \
-                        + " \n  STDERR: " + str(std_message[1])
-                    self.log += warning_message
-                    print warning_message
-                    print "\n\rThe other sub-processus are still running...\n"
+                    if not already_dead[i_proc]:
+                        std_message = subproc.communicate()
+                        warning_message = "\n\rWARNING: The program: \"" \
+                            + self.program_list[i_proc].Command() \
+                            + "\" does not work on the host '" \
+                            + host[i_proc]  + "'.\n"\
+                            + "status: " + str(subproc.wait()) \
+                            + "\n\nOutput message:" \
+                            + " \n  STDOUT: " + str(std_message[0]) \
+                            + " \n  STDERR: " + str(std_message[1])
+                        self.log += warning_message
+                        print warning_message
+                        print "\n\rThe other sub-processus are "\
+                            + "still running...\n"
+                        already_dead[i_proc] = True
                 i_proc += 1
             # Wainting time.
             time.sleep(delay)
@@ -255,18 +259,20 @@ class ProgramManager:
         i_proc = copy.copy(i_group)
         for subproc in self.process[i_group:]:
             if subproc.poll() != None and subproc.wait() != 0:
-                std_message = subproc.communicate()
-                warning_message = "\n\rWARNING: The program: \"" \
-                    + self.program_list[i_proc].Command() \
-                    + "\" does not work on the host '" \
-                    + host[i_proc]  + "'.\n"\
-                    + "status: " + str(subproc.wait()) \
-                    + "\n\nOutput message:" \
-                    + " \n  STDOUT: " + str(std_message[0]) \
-                    + " \n  STDERR: " + str(std_message[1])
-                self.log += warning_message
-                print warning_message
-                print "\n\rThe other sub-processus are still running...\n"
+                if not already_dead[i_proc]:
+                    std_message = subproc.communicate()
+                    warning_message = "\n\rWARNING: The program: \"" \
+                        + self.program_list[i_proc].Command() \
+                        + "\" does not work on the host '" \
+                        + host[i_proc]  + "'.\n"\
+                        + "status: " + str(subproc.wait()) \
+                        + "\n\nOutput message:" \
+                        + " \n  STDOUT: " + str(std_message[0]) \
+                        + " \n  STDERR: " + str(std_message[1])
+                    self.log += warning_message
+                    print warning_message
+                    print "\n\rThe other sub-processus are still running...\n"
+                    already_dead[i_proc] = True
             i_proc += 1
 
         # Writes the log.
