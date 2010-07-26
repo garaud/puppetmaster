@@ -213,17 +213,21 @@ class ProgramManager:
 
             # Checks current process status.
             i_proc = copy.copy(i_group)
+            # Loop on current running subprocess.
             for subproc in self.process[i_group:]:
                 if subproc.poll() != None and subproc.wait() != 0:
                     std_message = subproc.communicate()
-                    raise Exception, "The program: \"" \
+                    warning_message = "\n\rWARNING: The program: \"" \
                         + self.program_list[i_proc].Command() \
-                          + "\" does not work on the host '" \
-                          + host[i_proc]  + "'.\n"\
-                          + "status: " + str(subproc.wait()) \
-                          + "\n\nOutput message:" \
-                          + " \n  STDOUT: " + str(std_message[0]) \
-                          + " \n  STDERR: " + std_message[1]
+                        + "\" does not work on the host '" \
+                        + host[i_proc]  + "'.\n"\
+                        + "status: " + str(subproc.wait()) \
+                        + "\n\nOutput message:" \
+                        + " \n  STDOUT: " + str(std_message[0]) \
+                        + " \n  STDERR: " + std_message[1]
+                    self.log += warning_message
+                    print warning_message
+                    print "\n\rThe other sub-processus are still running...\n"
                 i_proc += 1
             # Wainting time.
             time.sleep(delay)
@@ -247,18 +251,22 @@ class ProgramManager:
             if end_time[j] == "":
                 end_time[j] = time.asctime()
 
-        # Checks current process status.
-        i_proc = i_group
+        # Checks process status.
+        i_proc = copy.copy(i_group)
         for subproc in self.process[i_group:]:
             if subproc.poll() != None and subproc.wait() != 0:
                 std_message = subproc.communicate()
-                raise Exception, "The program: \"" \
+                warning_message = "\n\rWARNING: The program: \"" \
                     + self.program_list[i_proc].Command() \
-                    + "\" does not work.\n" \
+                    + "\" does not work on the host '" \
+                    + host[i_proc]  + "'.\n"\
                     + "status: " + str(subproc.wait()) \
                     + "\n\nOutput message:" \
                     + " \n  STDOUT: " + str(std_message[0]) \
                     + " \n  STDERR: " + std_message[1]
+                self.log += warning_message
+                print warning_message
+                print "\n\rThe other sub-processus are still running...\n"
             i_proc += 1
 
         # Writes the log.
