@@ -376,7 +376,8 @@ class Host:
                                         stdout = subprocess.PIPE,
                                         stderr = subprocess.PIPE)
             elif out_option == 'file':
-                fd, filename = tempfile.mkstemp(prefix = self.name + '-')
+                fd, filename = tempfile.mkstemp(prefix = 'puppet-'
+                                                + self.name + '-')
                 outfile = open(filename, 'w+')
                 return outfile, subprocess.Popen([command], shell = True,
                                                  stdout = outfile,
@@ -394,7 +395,8 @@ class Host:
                                         stdout = subprocess.PIPE,
                                         stderr = subprocess.PIPE)
             elif out_option == 'file':
-                fd, filename = tempfile.mkstemp(prefix = self.name + '-')
+                fd, filename = tempfile.mkstemp(prefix = 'puppet-'
+                                                + self.name + '-')
                 outfile = open(filename, 'w+')
                 return outfile, subprocess.Popen([self.ssh + self.name
                                                   + ' ' + command],
