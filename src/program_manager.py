@@ -334,6 +334,18 @@ class ProgramManager:
             self.log += "\n" + "-" * 78 + "\n\n"
 
 
+    def RemoveTemporayFile(self):
+        """Removes a few temporary files.
+        Tries to remove the files in the attribute 'ouput_file_list' if the
+        option 'out_option' was set to 'file' in the method 'RunNetwork'.
+        """
+        try:
+            for f in self.output_file_list:
+                os.remove(f.name)
+        except:
+            pass
+
+
     def Try(self):
         """Performs a dry run.
         """
