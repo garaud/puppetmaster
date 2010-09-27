@@ -128,7 +128,7 @@ class ProgramManager:
           - None: writes the standard output in '/dev/null'.
           - 'pipe': writes the standard output in the 'subprocess.PIPE'
           - 'file': writes the standard output in file such as
-            '/tmp/hostname-erTfZ'.
+            '/tmp/puppet-hostname-erTfZ'.
         """
         import time, commands, copy
         if len(self.program_list) == 0:
