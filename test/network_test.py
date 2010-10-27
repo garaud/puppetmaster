@@ -14,14 +14,13 @@
 # FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
 # details.
 
-import os, sys, socket
+import sys
+import socket
 import unittest
-sys.path.insert(0, '../../')
-from puppetmaster import network
-sys.path.pop(0)
 
-# test_method_name = ['testInit', 'testUptime', 'testUsedMemory',
-#                     'testLaunchCommand']
+from puppetmaster import network
+
+
 test_method_name = ['testInit', 'testGetValue', 'testUsedMemory',
                     'testAvailableHost', 'testLaunchCommand']
 

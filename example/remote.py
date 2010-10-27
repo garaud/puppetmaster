@@ -14,8 +14,11 @@
 # FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
 # details.
 
-import sys, socket, random
-sys.path.insert(0, '../src')
+import sys
+import socket
+import random
+
+sys.path.insert(0, '../')
 import network
 sys.path.pop(0)
 

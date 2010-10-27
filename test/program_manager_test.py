@@ -14,11 +14,11 @@
 # FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
 # details.
 
-import os, sys
+import os
+import sys
 import unittest
-sys.path.insert(0, '../../')
+
 from puppetmaster import program_manager
-sys.path.pop(0)
 
 
 #######################

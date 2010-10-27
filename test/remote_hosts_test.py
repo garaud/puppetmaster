@@ -16,8 +16,9 @@
 
 import os
 import sys
-sys.path.insert(0, '../../')
-from puppetmaster import host
+
+sys.path.insert(0, '../')
+import host
 sys.path.pop(0)
 
 

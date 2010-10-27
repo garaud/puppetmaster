@@ -26,17 +26,13 @@ import unittest
 # The module names.
 __module_name__ = ['host', 'network', 'program_manager']
 
-
 # Deletes all modules if they are already imported.
 # You don't have to reload 'ipython' if a module has changed.
 for name in __module_name__:
     if sys.modules.has_key(name):
         del sys.modules[name]
-if sys.modules.has_key('puppetmaster'):
-    del sys.modules['puppetmaster']
-sys.path.insert(0, '../../')
+
 from puppetmaster import host, network, program_manager
-sys.path.pop(0)
 
 # Same operation for test modules.
 for name in ['host_test', 'network_test', 'program_manager_test']:

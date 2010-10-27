@@ -14,8 +14,14 @@
 # FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
 # details.
 
-import os, sys, pwd, socket, time, platform
-sys.path.insert(0, '../src')
+import os
+import sys
+import pwd
+import socket
+import time
+import platform
+
+sys.path.insert(0, '../')
 import program_manager
 sys.path.pop(0)
 

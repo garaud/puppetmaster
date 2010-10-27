@@ -14,11 +14,10 @@
 # FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
 # details.
 
-import os, sys
+import sys
 import unittest
-sys.path.insert(0, '../../')
+
 from puppetmaster import host
-sys.path.pop(0)
 
 test_method_name = ['testInit', 'testUptime', 'testUsedMemory',
                     'testLaunchCommand']
