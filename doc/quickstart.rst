@@ -9,6 +9,8 @@ QuickStart
 .. .. highlight:: python
 ..    :linenothreshold: 5
 
+A quickstart with PuppetMaster.
+
 .. _host:
 
 Host
@@ -18,8 +20,8 @@ Host
 
   Open an interactive Python window and do::
    
-    >>> import puppetmaster
-    >>> host = puppetmaster.Host()
+    >>> from puppetmaster.host import Host
+    >>> host = Host()
 
   Per default, it takes the local host. Then you can test a few methods::
 
@@ -41,7 +43,7 @@ Host
   with this host is done with SSH. Then, you can use the same methods as
   previously::
   
-    >>> host = puppetmaster.Host('whitman')
+    >>> host = Host('whitman')
     >>> host.name
     'whitman'
     >>> host.connection
@@ -73,7 +75,8 @@ Network
    
   This file is called ``host_list.txt`` for instance. Just do::
   
-    >>> net = puppetmaster.Network('host_list.txt')
+    >>> from puppetmaster.network import Network
+    >>> net = Network('host_list.txt')
 
   to declare an instance ``Network``. As you use a SSH connection, may be you
   don't want to have this message when it is your first connection to a
@@ -85,7 +88,7 @@ Network
 
   In order to avoid this message, you can do::
 
-    >>> net = puppetmaster.Network('host_list.txt', forced_ssh_config=True)
+    >>> net = Network('host_list.txt', forced_ssh_config=True)
 
   A PuppetMaster SSH configuration is used with the option
   ``StrictHostKeyChecking no`` and avoids the boring message.
