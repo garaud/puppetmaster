@@ -295,7 +295,8 @@ class Host:
             except SystemError:
                 return "off"
             if self.connection:
-                command_name = self.ssh + self.name + command_name
+                command_name = self.ssh + self.name + " 2>/dev/null" \
+                    + command_name
             status, out = commands.getstatusoutput(command_name)
             try:
                 out = out.split('\n')[2]
