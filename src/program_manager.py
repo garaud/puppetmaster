@@ -14,7 +14,7 @@
 # FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
 # details.
 
-"""\package src.program_manager
+"""\package program_manager
 
 This module provides facilities to launch several programs.
 
@@ -28,8 +28,11 @@ Class list:
 \author Vivien Mallet, Damien Garaud
 """
 
-import host
-import network
+import os
+
+from puppetmaster import host
+from puppetmaster import network
+
 
 ###################
 # PROGRAM_MANAGER #

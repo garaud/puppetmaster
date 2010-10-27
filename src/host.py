@@ -14,15 +14,19 @@
 # FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
 # details.
 
-"""\package src.host
+"""\package host
 
 Provides class 'Host' designed to manage host.
 
 \author Damien Garaud
 """
 
-import os, sys, commands
-import socket, popen2, subprocess
+import os
+import sys
+import commands
+import socket
+import popen2
+import subprocess
 
 
 ########

@@ -14,7 +14,7 @@
 # FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
 # details.
 
-"""\package src.network
+"""\package network
 
 Provides class 'Network' designed to managed processes launched over the
 network.
@@ -22,10 +22,14 @@ network.
 \author Vivien Mallet, Damien Garaud
 """
 
-import os, sys, types, commands, string, pwd
-import socket, popen2
+import os
+import sys
+import types
+import commands
+import socket
 import threading
-import host
+
+from puppetmaster import host
 
 
 ###########################
