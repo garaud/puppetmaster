@@ -95,8 +95,7 @@ class Host:
             try:
                 self.CheckSSH()
             except:
-                print "WARNING: The connection to the host "\
-                    + "'%s' failed." % self.name
+                self.connection = False
 
         if self.connection:
             # Gets the number of processors.
