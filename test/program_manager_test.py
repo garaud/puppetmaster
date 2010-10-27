@@ -133,7 +133,7 @@ class ProgramManagerTestCase(unittest.TestCase):
         self.delay = 2.
         # Is there a host file?
         if self.is_file:
-            network_ = program_manager.network.Network(self.host_file)
+            network_ = program_manager.network.Network(self.host_file, True)
             self.program_manager = \
                 program_manager.ProgramManager(network_)
         else:

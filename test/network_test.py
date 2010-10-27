@@ -40,7 +40,7 @@ class NetworkTestCase(unittest.TestCase):
     def setUp(self):
         import random
         if self.is_file:
-            self.net = network.Network(self.host_file)
+            self.net = network.Network(self.host_file, True)
         # Just local host.
         self.net_local = network.Network()
         # The command which will be launched.

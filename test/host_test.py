@@ -55,7 +55,7 @@ class HostTestCase(unittest.TestCase):
         if self.is_file:
             # Random host.
             index = random.randint(0, len(self.host_list_name) - 1)
-            self.random_host = host.Host(self.host_list_name[index])
+            self.random_host = host.Host(self.host_list_name[index], True)
         # The command which will be launched.
         self.command = "echo 'Hello World!'"
 
