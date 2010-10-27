@@ -1,80 +1,69 @@
-README for PuppetMaster.
 
+README for PuppetMaster
+=======================
 
 About
 ----- 
 
-This project contains 3 Python modules ('./src/host.py', './src/network.py'
-and './src/program_manager.py'). They can be useful if you would like to know
-the load on remotes hosts or launch several programs on remote hosts.
+This project provides facilities to deal with computations on a GNU/Linux
+network. You can know the load averages of multiple remote hosts and launch
+several programs with it.
 
 
-------------
 Requirements
 ------------
 
-These modules were written under Python version 2.5.
+PuppetMaster should be compatible with python >= 2.5.
+
+A well-configured SSH connection to reach the remote hosts that you want to
+use.
 
 
-------------
-Installation
-------------
+Install
+-------
 
-Assume you have a directory which is defined in your PYTHONPATH. For instance
-'$HOME/usr/lib/python'. Go to this directory and do:
+Go to the root project directory and just do::
 
-ln -s /path/to/puppetmaster/src puppetmaster
+    python setup.py install
 
-Then, you just do 'from puppetmaster import *' in a Python script.
+Maybe you need root permissions to do that. You can also decide to install
+PuppetMaster in one of your own directory. Thus, you have to use the
+``--prefix`` option. For instance::
 
+    python setup.py install --prefix=$HOME/usr
 
-----
-Test
-----
+PuppetMaster will be installed in
+``$HOME/usr/lib/python2.x/site-packages``. You have to add this directory to
+your environment variable ``PYTHONPATH`` if you want to import PuppetMaster.
 
-First, you can create a file where you specify the name of each remote
-hosts. For instance:
-    node001
-    node002
-    node003
-    node004
+See::
 
-You can launch 'python remote_hosts_test.py' in the directory './test' to know
-if you do not have any access problem.
+    python setup.py --help
 
- You can try too:
-    cd ./test
-    python tests.py -m MODULE_NAME
-It checks the module 'MODULE_NAME'. You can also do:
-    python tests.py -m all -f host_file
-It checks every module for a list of hosts defined in the file 'host_file'.
+for more information about Python package installation.
 
-Moreover, you have a few scripts in './example':
-    - program.py
-    - remote.py
+In order to check if PuppetMaster works, do::
 
+    python -c 'import puppetmaster'
 
--------------
 Documentation
 -------------
 
-A soft description of each class and each method is available in the source
-code. You can also generate the documentation with Doxygen in the directory
-'./doc'. Read './doc/REAMDE' for more explanations.
+Look in the doc/ subdirectory.
+
+Test
+----
+
+Look in the test/ subdirectory.
 
 
--------
 License
 -------
 
-This project is under GPLv2. See the file LICENSE.
+This project is under GNU GPLv2. See the file LICENSE.
 
 
---------
 Contacts
 --------
 
-Damien Garaud: damien.garaud@inria.fr
-
-
-# Latest version: 18 February 2010
+Damien Garaud: damien.garaud@gmail.fr
