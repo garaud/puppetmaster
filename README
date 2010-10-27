@@ -46,6 +46,13 @@ In order to check if PuppetMaster works, do::
 
     python -c 'import puppetmaster'
 
+You must not have this message::
+
+    Traceback (most recent call last):
+    File "<string>", line 1, in <module>
+    ImportError: No module named puppetmaster
+
+
 Documentation
 -------------
 
