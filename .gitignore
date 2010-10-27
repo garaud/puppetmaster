@@ -2,3 +2,5 @@
 *.pyc
 doc/html/*
 doc/latex/*
+doc/sphinx_doc/_build/
+doc/sphinx_doc/.doctrees/
