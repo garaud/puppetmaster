@@ -11,11 +11,16 @@ Introduction
 
 Python version supported: 2.5
 
-Not tested for newer Python versions.
+Not tested with newer Python versions.
 
-With PuppetMaster, you can get some information on remote hosts and manage it. Via a SSH connection and a few remote hosts, you can get the load averages for each host and launch a list of commands: Unix commands, scripts, C++ executables, ...
+With PuppetMaster, you can get some information on remote hosts and manage
+it. Via a SSH connection and a few remote hosts, you can get the load averages
+for each host and launch a list of commands: Unix commands, scripts, C++
+executables, ...
 
-It uses the modules `threading <http://docs.python.org/library/threading.html>`_ and `subprocess <http://docs.python.org/library/subprocess.html>`_ .
+It uses the modules `threading
+<http://docs.python.org/library/threading.html>`_ and `subprocess
+<http://docs.python.org/library/subprocess.html>`_ .
 
   - `threading <http://docs.python.org/library/threading.html>`_ is used to
     get some information faster.
@@ -41,4 +46,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
