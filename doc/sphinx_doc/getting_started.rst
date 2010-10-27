@@ -19,10 +19,10 @@ Then, you just do::
 in a directory which appears in your ``PYTHONPATH``.
 
 
-.. _installation:
+.. _checking:
 
-Installation
-============
+Checking
+========
 
 You may already have PuppetMaster installed -- you can check by doing::
 
