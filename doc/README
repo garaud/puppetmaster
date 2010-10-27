@@ -1,0 +1,25 @@
+
+README for PuppetMaster Documentation
+=====================================
+
+Requirements
+------------
+
+You need Sphinx. It is a documentation generator. It is used for Python
+official documentation web site.
+
+See http://sphinx.pocoo.org/.
+
+Generate documentation
+----------------------
+
+To generate documentation do::
+
+    make html
+
+or::
+
+    make latexpdf
+
+Then, see in ``doc/_build/html`` or ``doc/_build/latex`` subdirectories and
+read documentation opening ``index.html`` or ``PuppetMaster.pdf``.
