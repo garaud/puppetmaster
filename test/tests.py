@@ -30,7 +30,7 @@ __module_name__ = ['host', 'network', 'program_manager']
 for name in __module_name__:
     if sys.modules.has_key(name):
         del sys.modules[name]
-sys.path.insert(0, '../src')
+sys.path.insert(0, '../')
 import host, network, program_manager
 sys.path.pop(0)
 
