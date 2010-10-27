@@ -1,0 +1,38 @@
+
+README for PuppetMaster/Test
+============================
+
+First, you can create a file where you specify the name of each remote
+hosts. For instance::
+
+    keats
+    whitman
+    dickinson
+
+You can also add an empty line or a wrong name to see if PuppetMaster can manage these kind of exceptions.
+
+
+SSH connection and PuppetMaster checking
+----------------------------------------
+
+Suppose you text file named 'host_file', you can launch::
+
+    python remote_hosts_test.py host_file
+
+
+Module testing with unittest
+----------------------------
+
+To launch all tests, do::
+
+    python tests.py -f 'host_file'
+
+If you would like to check one of the 3 modules:
+
+  - host
+  - network
+  - program_manager
+
+you can do::
+
+    python tests.py -f 'host_file' -m MODULE_NAME
