@@ -2,7 +2,7 @@
 # Author: Damien Garaud
 #
 # This file is part of the PuppetMaster project. It checks the module
-# 'network' and 'program_manager'.
+# 'host', 'network' and 'program_manager'.
 #
 # This script is free; you can redistribute it and/or modify it under the
 # terms of the GNU General Public License as published by the Free Software
@@ -14,7 +14,9 @@
 # FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
 # details.
 
-import os, sys, optparse
+import os
+import sys
+import optparse
 import unittest
 
 ##################
@@ -26,12 +28,14 @@ __module_name__ = ['host', 'network', 'program_manager']
 
 
 # Deletes all modules if they are already imported.
-# You don't have to reload 'ipython' if a module is changed.
+# You don't have to reload 'ipython' if a module has changed.
 for name in __module_name__:
     if sys.modules.has_key(name):
         del sys.modules[name]
-sys.path.insert(0, '../')
-import host, network, program_manager
+if sys.modules.has_key('puppetmaster'):
+    del sys.modules['puppetmaster']
+sys.path.insert(0, '../../')
+from puppetmaster import host, network, program_manager
 sys.path.pop(0)
 
 # Same operation for test modules.
@@ -39,6 +43,7 @@ for name in ['host_test', 'network_test', 'program_manager_test']:
     if sys.modules.has_key(name):
         del sys.modules[name]
 import host_test, network_test, program_manager_test
+
 
 ###################
 # OPTIONS PARSING #

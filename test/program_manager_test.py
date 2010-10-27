@@ -16,8 +16,8 @@
 
 import os, sys
 import unittest
-sys.path.insert(0, '../src')
-import program_manager
+sys.path.insert(0, '../../')
+from puppetmaster import program_manager
 sys.path.pop(0)
 
 

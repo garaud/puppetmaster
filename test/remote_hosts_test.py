@@ -14,9 +14,10 @@
 # FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
 # details.
 
-import os, sys
-sys.path.insert(0, '../src')
-import host
+import os
+import sys
+sys.path.insert(0, '../../')
+from puppetmaster import host
 sys.path.pop(0)
 
 
@@ -62,6 +63,9 @@ f.close()
 # Loop to declare and check each host.
 for name in output:
     name = name.strip('\n')
-    host_instance = host.Host(name, forced_ssh_config = True)
-    if host_instance.connection:
-        print("%s -- OK" % name)
+    if len(name) != 0:
+        host_instance = host.Host(name, forced_ssh_config = True)
+        if host_instance.connection:
+            print("%s -- OK" % name)
+        else:
+            print("%s -- off" % name)

@@ -16,8 +16,8 @@
 
 import os, sys, socket
 import unittest
-sys.path.insert(0, '../src')
-import network
+sys.path.insert(0, '../../')
+from puppetmaster import network
 sys.path.pop(0)
 
 # test_method_name = ['testInit', 'testUptime', 'testUsedMemory',

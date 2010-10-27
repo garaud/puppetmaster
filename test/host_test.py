@@ -16,8 +16,8 @@
 
 import os, sys
 import unittest
-sys.path.insert(0, '../src')
-import host
+sys.path.insert(0, '../../')
+from puppetmaster import host
 sys.path.pop(0)
 
 test_method_name = ['testInit', 'testUptime', 'testUsedMemory',
