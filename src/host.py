@@ -160,7 +160,6 @@ class Host:
         """
         if self.name == socket.gethostname():
             self.connection = True
-            pass
         else:
             # SSH 'pwd' test.
             command_name = self.ssh + self.name + " pwd 2> /dev/null"
