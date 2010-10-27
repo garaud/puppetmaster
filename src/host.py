@@ -33,6 +33,8 @@ import socket, popen2, subprocess
 ## It may be written in a temporary SSH configuration file.
 _sshconfig_ = """
 Host *
+ForwardAgent yes
+HashKnownHosts yes
 ForwardX11Trusted yes
 
 StrictHostKeyChecking no
