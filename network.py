@@ -157,11 +157,12 @@ class Network:
 
 
     def SetHostList(self, host_list):
+    def SetHostList(self, host_list, forced_ssh_config):
         """Sets a new list of hosts.
         \param host_list A list of host instances, host names or a file.
         """
         self.hosts = []
-        self.CheckArgument(host_list)
+        self.CheckArgument(host_list, forced_ssh_config)
         # Empty connected hosts list?
         if self.GetConnectedHostNumber() == 0:
             raise ValueError, "The list of connected hosts list is empty."
