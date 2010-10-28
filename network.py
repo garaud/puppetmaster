@@ -35,41 +35,41 @@ from puppetmaster import host
 ###########################
 
 
-def IsNum(str):
+def is_num(str_):
     """Is the string is a float?
     \param str a string
     @return 0 or 1
     """
-    is_num = 1
+    is_num_ = 1
     try:
-        num = float(str)
+        num = float(str_)
     except ValueError:
-        is_num = 0
-    return is_num
+        is_num_ = 0
+    return is_num_
 
 
-def IsInt(str):
+def is_int(str_):
     """Tests whether a string is an integer.
     \param str a string to be tested.
     @return True if 'str' is a integer, False otherwise.
     """
-    is_num = True
+    is_num_ = True
     try:
-        num = int(str)
+        num = int(str_)
     except ValueError:
-        is_num = False
-    return is_num
+        is_num_ = False
+    return is_num_
 
 
-def ToNum(str):
+def to_num(str_):
     """Converts a string to a number.
     \param str a string to be converted.
     @return The number represented by 'str'.
     """
-    if IsInt(str):
-        return int(str)
-    elif IsNum(str):
-        return float(str)
+    if is_int(str_):
+        return int(str_)
+    elif is_num(str_):
+        return float(str_)
     else:
         raise Exception, "\"" + str + "\" is not a number."
 
@@ -80,13 +80,12 @@ def remove(files):
         files = [files]
     if not isinstance(files, list):
         raise ValueError
-    for file in files:
-        import os
-        if os.path.isdir(file):
+    for filename in files:
+        if os.path.isdir(filename):
             import shutil
-            shutil.rmtree(file)
-        elif os.path.isfile(file):
-            os.remove(file)
+            shutil.rmtree(filename)
+        elif os.path.isfile(filename):
+            os.remove(filename)
 
 
 ###########
@@ -104,7 +103,7 @@ class Network:
         """Initiliazes the list of hosts.
         \param host_list A list of host instances, host names or a file.
         \param forced_ssh_config Would like to use the PuppetMaster SSH
-        configuration? (True or False). See the variable 'host._sshconfig_'.
+        configuration? (True or False). See the variable 'host.__sshconfig__'.
         """
 
         ## The hosts list.
@@ -121,7 +120,7 @@ class Network:
         """Checks the argument.
         \param host_list A list of host instances, host names or a file.
         \param forced_ssh_config Would like to use the PuppetMaster SSH
-        configuration? (True or False). See the variable 'host._sshconfig_'.
+        configuration? (True or False). See the variable 'host.__sshconfig__'.
         """
         # The local host by default.
         if host_list == None:
@@ -172,8 +171,8 @@ class Network:
     def PrintHostNames(self):
         """Prints the name of hosts.
         """
-        for host in self.hosts:
-            print host.name
+        for host_ in self.hosts:
+            print host_.name
 
 
     def GetHostNames(self):
@@ -181,8 +180,8 @@ class Network:
         @return The list of host names.
         """
         result = []
-        for host in self.hosts:
-            result.append(host.name)
+        for host_ in self.hosts:
+            result.append(host_.name)
         return result
 
 
@@ -198,8 +197,8 @@ class Network:
         @return Number of connected hosts.
         """
         count = 0
-        for host in self.hosts:
-            if host.connection:
+        for host_ in self.hosts:
+            if host_.connection:
                 count += 1
         return count
 
@@ -209,8 +208,8 @@ class Network:
         @return A list of tuples (hostname, Nprocessor)
         """
         result = []
-        for host in self.hosts:
-            result.append((host.name, host.Nprocessor))
+        for host_ in self.hosts:
+            result.append((host_.name, host_.Nprocessor))
         return result
 
 
@@ -218,7 +217,7 @@ class Network:
         """Creates 'host.Host' instances with multi-threading.
         \param host_list A list of host names.
         \param forced_ssh_config Would like to use the PuppetMaster SSH
-        configuration? (True or False). See the variable 'host._sshconfig_'.
+        configuration? (True or False). See the variable 'host.__sshconfig__'.
         """
         processus_list = []
         # Launches all threads.
@@ -281,14 +280,14 @@ class Network:
         uptime_list = self.GetUptime()
         result = []
         # A loop for every hosts to pick up the number of available cpu.
-        for host in self.hosts:
-            index = [x[0] for x in uptime_list].index(host.name)
+        for host_ in self.hosts:
+            index = [x[0] for x in uptime_list].index(host_.name)
             average = uptime_list[index][1][0]
-            if host.connection:
+            if host_.connection:
                 average = uptime_list[index][1][0]
-                if average < host.Nprocessor - 0.5:
-                    result.append((host.name, int(host.Nprocessor
-                                                  - average + 0.5)))
+                if average < host_.Nprocessor - 0.5:
+                    result.append((host_.name, int(host_.Nprocessor
+                                                   - average + 0.5)))
         return result
 
 
@@ -484,7 +483,7 @@ class ThreadHost(threading.Thread):
         """The constructor.
         \param hostname A name of host.
         \param forced_ssh_config Would like to use the PuppetMaster SSH
-        configuration? (True or False). See the variable 'host._sshconfig_'.
+        configuration? (True or False). See the variable 'host.__sshconfig__'.
         """
         threading.Thread.__init__(self)
         ## The host name.
