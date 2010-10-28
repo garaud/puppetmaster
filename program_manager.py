@@ -30,7 +30,6 @@ Class list:
 
 import os
 
-from puppetmaster import host
 from puppetmaster import network
 
 
@@ -133,7 +132,8 @@ class ProgramManager:
           - 'file': writes the standard output in file such as
             '/tmp/puppet-hostname-erTfZ'.
         """
-        import time, commands, copy
+        import time
+        import copy
         if len(self.program_list) == 0:
             raise Exception, "The program list is empty."
         self.process = []
@@ -382,8 +382,6 @@ class Program:
         the configuration files.
         \param group the group index.
         """
-        import os
-
         if config is not None:
             ## \brief A configuration file.
             ## \details It can be the path (str) to the configuration file or a
@@ -474,7 +472,6 @@ class Program:
         """Performs a dry run.
         """
         self.config.Proceed()
-        import os
         if os.path.isfile(self.name):
             self.status = 0
         else:
@@ -518,7 +515,6 @@ class Configuration:
         primary configuration files, they are subject to the replacements and
         copies, but are not considered as program arguments.
         """
-        import os
         if isinstance(file_list, str):
             ## The configuration file or list of configuration to be managed.
             self.raw_file_list = [file_list]
@@ -617,10 +613,11 @@ class Configuration:
     def Proceed(self):
         """Proceeds replacement in configuration files and copy them.
         """
-        import os, shutil, fileinput
+        import shutil
+        import fileinput
+        import tempfile
         self.file_list = []
         if self.mode == "random_path" and self.raw_file_list is not []:
-            import tempfile
             random_path = tempfile.mkdtemp(prefix = self.path)
         for f in self.raw_file_list:
             if self.mode == "raw":
