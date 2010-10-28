@@ -15,15 +15,12 @@
 # details.
 
 import os
-import sys
 import pwd
 import socket
 import time
 import platform
 
-sys.path.insert(0, '../')
-import program_manager
-sys.path.pop(0)
+from puppetmaster import program_manager
 
 
 #######################

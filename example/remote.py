@@ -14,13 +14,10 @@
 # FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
 # details.
 
-import sys
 import socket
 import random
 
-sys.path.insert(0, '../')
-import network
-sys.path.pop(0)
+from puppetmaster import network
 
 
 ##################
@@ -80,5 +77,6 @@ subproc = net.LaunchSubProcess(command_name, random_host)
 
 # If you want to send a mail.
 message = "This is just a test."
-# net.SendMail(subject = '[netowrk.py]: Test', fromaddr = login@domail.com,
-#              toadrr = login@domain.com, msg = message)
+# net.SendMail(subject='[netowrk.py]: Test',
+#              fromaddr='graudd@cerea.enpc.fr',
+#              toaddr='damien.garaud@inria.fr', msg=message)
