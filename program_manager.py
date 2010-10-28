@@ -630,7 +630,6 @@ class Configuration:
                 name = os.path.join(self.path, os.path.basename(rawfile))
                 shutil.copy(rawfile, name)
             elif self.mode == "random":
-                import tempfile
                 name = os.path.join(self.path, os.path.basename(rawfile))
                 name = tempfile.mkstemp(prefix = name + "-")[1]
                 shutil.copy(rawfile, name)
