@@ -56,6 +56,10 @@ parser.add_option("-f", "--file",
                   help="The name of the file where there are the host names."\
                       + " If it is not given, just tests the local host.",
                   metavar="FILE")
+parser.add_option("--force-ssh-config", dest="forced_ssh", action="store_true",
+                  default=False,
+                  help="Uses the SSH configuration from PuppetMaster.")
+
 (options, args) = parser.parse_args()
 
 # If the number of arguments is wrong.
@@ -97,10 +101,12 @@ if options.module_name == 'all':
     suite = unittest.TestSuite()
     # For the module 'host'.
     for method_name in host_test.test_method_name:
-        suite.addTest(host_test.HostTestCase(method_name, host_file))
+        suite.addTest(host_test.HostTestCase(method_name, host_file,
+                                             options.forced_ssh))
     # For the module 'network'.
     for method_name in network_test.test_method_name:
-        suite.addTest(network_test.NetworkTestCase(method_name, host_file))
+        suite.addTest(network_test.NetworkTestCase(method_name, host_file,
+                                                   options.forced_ssh))
     # For the module 'program_manager'.
     # Class 'Configuration'.
     config_method_list = \
@@ -117,20 +123,24 @@ if options.module_name == 'all':
     progmanager_method_list = \
         program_manager_test.ProgramManagerTestCase._method_name_
     for method_name in progmanager_method_list:
-        suite.addTest(program_manager_test.ProgramManagerTestCase(method_name,
-                                                                  host_file))
+        suite.addTest(program_manager_test.\
+                          ProgramManagerTestCase(method_name,
+                                                 host_file,
+                                                 options.forced_ssh))
     unittest.TextTestRunner(verbosity=2).run(suite)
 # 'host' module.
 elif options.module_name == 'host':
     suite = unittest.TestSuite()
     for method_name in host_test.test_method_name:
-        suite.addTest(host_test.HostTestCase(method_name, host_file))
+        suite.addTest(host_test.HostTestCase(method_name, host_file,
+                                             options.forced_ssh))
     unittest.TextTestRunner(verbosity=2).run(suite)
 # 'network' module.
 elif options.module_name == 'network':
     suite = unittest.TestSuite()
     for method_name in network_test.test_method_name:
-        suite.addTest(network_test.NetworkTestCase(method_name, host_file))
+        suite.addTest(network_test.NetworkTestCase(method_name, host_file,
+                                                   options.forced_ssh))
     unittest.TextTestRunner(verbosity=2).run(suite)
 # 'program_manager' module.
 elif options.module_name == 'program_manager':
@@ -150,8 +160,10 @@ elif options.module_name == 'program_manager':
     progmanager_method_list = \
         program_manager_test.ProgramManagerTestCase._method_name_
     for method_name in progmanager_method_list:
-        suite.addTest(program_manager_test.ProgramManagerTestCase(method_name,
-                                                                  host_file))
+        suite.addTest(program_manager_test.\
+                          ProgramManagerTestCase(method_name,
+                                                 host_file,
+                                                 options.forced_ssh))
     unittest.TextTestRunner(verbosity=2).run(suite)
 else:
     parser.help_message()

@@ -119,9 +119,11 @@ class ProgramManagerTestCase(unittest.TestCase):
     _method_name_ = ['testInit', 'testAccessMethods',
                      'testProcessingMethods']
 
-    def __init__(self, methodName='runTest', host_file = None):
+    def __init__(self, methodName='runTest', host_file = None,
+                 forced_ssh_config  = False):
         unittest.TestCase.__init__(self, methodName)
         self.host_file = host_file
+        self.forced_ssh_config = forced_ssh_config
         # If there is file.
         if self.host_file == None:
             self.is_file = False
@@ -133,7 +135,8 @@ class ProgramManagerTestCase(unittest.TestCase):
         self.delay = 2.
         # Is there a host file?
         if self.is_file:
-            network_ = program_manager.network.Network(self.host_file, True)
+            network_ = program_manager.network.Network(self.host_file,
+                                                       self.forced_ssh_config)
             self.program_manager = \
                 program_manager.ProgramManager(network_)
         else:

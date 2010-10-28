@@ -27,18 +27,29 @@ from puppetmaster import host
 help_message = \
 """
 Usage:
- python %s [host_file]
+ python %s [host_file] [forced_ssh_config]
  Checks the connection to each host defined in a file.
 
 Arguments:
  [host_file]: the file where the host names are defined (one for each line).
+ [forced_ssh_config]: uses the SSH configuration from PuppetMaster (optional).
 """ % sys.argv[0]
 
-if len(sys.argv) != 2:
+if len(sys.argv) == 2:
+    host_file = sys.argv[1]
+    forced_ssh = 'no'
+elif len(sys.argv) == 3:
+    host_file = sys.argv[1]
+    forced_ssh = sys.argv[2]
+else:
     print help_message
     sys.exit(0)
-else:
-    host_file = sys.argv[1]
+
+if forced_ssh not in ['no', 'yes']:
+    print help_message
+    print "Second argument [forced_ssh_config] must be 'yes' or 'no'."
+    print "'no' by default."
+    sys.exit(0)
 
 
 ###############
@@ -48,6 +59,12 @@ else:
 # Host file name checking.
 if not os.path.isfile(host_file):
     raise Exception, "The file '%s' not found." % host_file
+
+# Forces SSH configuration?
+if forced_ssh == 'yes':
+    forced_ssh = True
+else:
+    forced_ssh = False
 
 
 ##############
@@ -63,7 +80,7 @@ f.close()
 for name in output:
     name = name.strip('\n')
     if len(name) != 0:
-        host_instance = host.Host(name, forced_ssh_config = True)
+        host_instance = host.Host(name, forced_ssh)
         if host_instance.connection:
             print("%s -- OK" % name)
         else:

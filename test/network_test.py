@@ -27,9 +27,11 @@ test_method_name = ['testInit', 'testGetValue', 'testUsedMemory',
 
 class NetworkTestCase(unittest.TestCase):
 
-    def __init__(self, methodName='runTest', host_file = None):
+    def __init__(self, methodName='runTest', host_file = None,
+                 forced_ssh_config = False):
         unittest.TestCase.__init__(self, methodName)
         self.host_file = host_file
+        self.forced_ssh_config = forced_ssh_config
         # If there is file.
         if self.host_file == None:
             self.is_file = False
@@ -39,7 +41,7 @@ class NetworkTestCase(unittest.TestCase):
     def setUp(self):
         import random
         if self.is_file:
-            self.net = network.Network(self.host_file, True)
+            self.net = network.Network(self.host_file, self.forced_ssh_config)
         # Just local host.
         self.net_local = network.Network()
         # The command which will be launched.

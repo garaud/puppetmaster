@@ -25,9 +25,11 @@ test_method_name = ['testInit', 'testUptime', 'testUsedMemory',
 
 class HostTestCase(unittest.TestCase):
 
-    def __init__(self, methodName='runTest', host_file = None):
+    def __init__(self, methodName='runTest', host_file = None,
+                 forced_ssh_config = False):
         unittest.TestCase.__init__(self, methodName)
         self.host_file = host_file
+        self.forced_ssh_config = forced_ssh_config
         # If there is file.
         if self.host_file == None:
             self.is_file = False
@@ -49,12 +51,13 @@ class HostTestCase(unittest.TestCase):
         # The local host.
         self.local_host = host.Host()
         # A fake host.
-        self.fake_host = host.Host('fake')
+        self.fake_host = host.Host('fake', self.forced_ssh_config)
         # Is there a file?
         if self.is_file:
             # Random host.
             index = random.randint(0, len(self.host_list_name) - 1)
-            self.random_host = host.Host(self.host_list_name[index], True)
+            self.random_host = host.Host(self.host_list_name[index],
+                                         self.forced_ssh_config)
         # The command which will be launched.
         self.command = "echo 'Hello World!'"
 
