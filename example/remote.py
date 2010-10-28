@@ -77,6 +77,6 @@ subproc = net.LaunchSubProcess(command_name, random_host)
 
 # If you want to send a mail.
 message = "This is just a test."
-# net.SendMail(subject='[netowrk.py]: Test',
+# net.SendMail(subject='[network.py]: Test',
 #              fromaddr='graudd@cerea.enpc.fr',
 #              toaddr='damien.garaud@inria.fr', msg=message)
