@@ -23,9 +23,7 @@ network.
 """
 
 import os
-import sys
 import types
-import commands
 import socket
 import threading
 
@@ -316,7 +314,6 @@ class Network:
         \param host_ The name of the host or a 'host.Host' instance.
         @return The status of the command.
         """
-        import os
         # The name of a host.
         if isinstance(host_, str):
             if host_ not in [x.name for x in self.hosts]:
@@ -338,7 +335,6 @@ class Network:
         \param host_ The name of the host or a 'host.Host' instance.
         @return The output and the status of the command in a tuple.
         """
-        import os
         # The name of a host.
         if isinstance(host_, str):
             if host_ not in [x.name for x in self.hosts]:
@@ -360,7 +356,6 @@ class Network:
         \param host_ The name of the host or a 'host.Host' instance.
         @return A Popen4 object.
         """
-        import os
         if isinstance(host_, str):
             if host_ not in [x.name for x in self.hosts]:
                 raise ValueError, "The host name '%s' not found " % host_ \
@@ -391,7 +386,6 @@ class Network:
         @return A 'subprocess.Popen' instance or (file object,
         subprocess.Popen) when the 'out_option' is set to 'file'.
         """
-        import os
         if isinstance(host_, str):
             if host_ not in [x.name for x in self.hosts]:
                 raise ValueError, "The host name '%s' not found " % host_ \
@@ -415,7 +409,6 @@ class Network:
         \param host_ The name of the host or a 'host.Host' instance.
         @return The output and the status of the command in a tuple.
         """
-        import os
         if isinstance(host_, str):
             if host_ not in [x.name for x in self.hosts]:
                 raise ValueError, "The host name '%s' not found " % host_ \
