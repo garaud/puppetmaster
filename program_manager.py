@@ -82,10 +82,12 @@ class ProgramManager:
             self.program_list.append(Program(program))
         else:
             self.program_list.append(program)
-        def compare(x, y):
-            if x.group < y.group:
+        def compare(prg_x, prg_y):
+            """Compares the group number between two programs.
+            """
+            if prg_x.group < prg_y.group:
                 return -1
-            elif x.group > y.group:
+            elif prg_x.group > prg_y.group:
                 return 1
             else:
                 return 0
@@ -137,7 +139,7 @@ class ProgramManager:
         if len(self.program_list) == 0:
             raise Exception, "The program list is empty."
         self.process = []
-        host = []
+        host_list = []
         self.output_file_list = []
         already_dead = [False for i in range(len(self.program_list))]
         beg_time = []
@@ -211,17 +213,18 @@ class ProgramManager:
             print "Program: ", program.basename, \
                 " - Available host: ", current_host
             if out_option == 'file':
-                outfile, p = self.net.LaunchSubProcess(program.Command(),
-                                                       current_host,
-                                                       out_option)
+                outfile, current_subproc = \
+                    self.net.LaunchSubProcess(program.Command(),
+                                              current_host,
+                                              out_option)
                 self.output_file_list.append(outfile)
             else:
-                p = self.net.LaunchSubProcess(program.Command(),
-                                              current_host)
-            self.log += "Sub-program with the ID %i\n" % p.pid
-            self.process.append(p)
+                current_subproc = self.net.LaunchSubProcess(program.Command(),
+                                                            current_host)
+            self.log += "Sub-program with the ID %i\n" % current_subproc.pid
+            self.process.append(current_subproc)
             count_program += 1
-            host.append(current_host)
+            host_list.append(current_host)
             beg_time.append(time.asctime())
 
             # If processus is done, writes the ended date.
@@ -239,7 +242,7 @@ class ProgramManager:
                         warning_message = "\n\rWARNING: The program: \"" \
                             + self.program_list[i_proc].Command() \
                             + "\" does not work on the host '" \
-                            + host[i_proc]  + "'.\n"\
+                            + host_list[i_proc]  + "'.\n"\
                             + "status: " + str(subproc.wait()) \
                             + "\n\nOutput message:" \
                             + " \n  STDOUT: " + str(std_message[0]) \
@@ -289,7 +292,7 @@ class ProgramManager:
                     warning_message = "\n\rWARNING: The program: \"" \
                         + self.program_list[i_proc].Command() \
                         + "\" does not work on the host '" \
-                        + host[i_proc]  + "'.\n"\
+                        + host_list[i_proc]  + "'.\n"\
                         + "status: " + str(subproc.wait()) \
                         + "\n\nOutput message:" \
                         + " \n  STDOUT: " + str(std_message[0]) \
@@ -330,7 +333,7 @@ class ProgramManager:
             if self.log[-1] != "\n":
                 self.log += "\n"
             self.log += "\nStatus: " + str(self.process[i].poll()) + "\n"
-            self.log += "Hostname: " + str(host[i]) + "\n"
+            self.log += "Hostname: " + str(host_list[i]) + "\n"
             self.log += "Started at " + str(beg_time[i]) + "\n"
             self.log += "Ended approximatively at " + str(end_time[i]) \
                         + "\n"
@@ -343,8 +346,8 @@ class ProgramManager:
         option 'out_option' was set to 'file' in the method 'RunNetwork'.
         """
         try:
-            for f in self.output_file_list:
-                os.remove(f.name)
+            for outfile in self.output_file_list:
+                os.remove(outfile.name)
         except:
             pass
 
@@ -352,15 +355,15 @@ class ProgramManager:
     def Try(self):
         """Performs a dry run.
         """
-        for program in self.program_list:
-            program.Try()
-            self.log += program.log
+        for program_ in self.program_list:
+            program_.Try()
+            self.log += program_.log
             if self.log[-1] != "\n":
                 self.log += "\n"
             self.log += "\n" + "-" * 78 + "\n\n"
-            if program.status != 0:
-                raise Exception, "Program \"" + program.basename \
-                      + "\" failed (status " + str(program.status) + ")."
+            if program_.status != 0:
+                raise Exception, "Program \"" + program_.basename \
+                      + "\" failed (status " + str(program_.status) + ")."
 
 
 ###########
@@ -528,9 +531,9 @@ class Configuration:
             self.raw_file_list.append(additional_file_list)
         else:
             self.raw_file_list += additional_file_list
-        for f in self.raw_file_list:
-            if not os.path.isfile(f):
-                raise Exception, "Unable to find \"" + f + "\"."
+        for rawfile in self.raw_file_list:
+            if not os.path.isfile(rawfile):
+                raise Exception, "Unable to find \"" + rawfile + "\"."
 
         ## The list of replaced configuration files.
         self.file_list = []
@@ -619,21 +622,21 @@ class Configuration:
         self.file_list = []
         if self.mode == "random_path" and self.raw_file_list is not []:
             random_path = tempfile.mkdtemp(prefix = self.path)
-        for f in self.raw_file_list:
+        for rawfile in self.raw_file_list:
             if self.mode == "raw":
-                if os.path.dirname(f) == self.path:
+                if os.path.dirname(rawfile) == self.path:
                     raise Exception, "Error: attempt to overwrite" \
-                          + " the raw configuration file \"" + f + "\"."
-                name = os.path.join(self.path, os.path.basename(f))
-                shutil.copy(f, name)
+                          + " the raw configuration file \"" + rawfile + "\"."
+                name = os.path.join(self.path, os.path.basename(rawfile))
+                shutil.copy(rawfile, name)
             elif self.mode == "random":
                 import tempfile
-                name = os.path.join(self.path, os.path.basename(f))
-                fd, name = tempfile.mkstemp(prefix = name + "-")
-                shutil.copy(f, name)
+                name = os.path.join(self.path, os.path.basename(rawfile))
+                name = tempfile.mkstemp(prefix = name + "-")[1]
+                shutil.copy(rawfile, name)
             elif self.mode == "random_path":
-                name = os.path.join(random_path, os.path.basename(f))
-                shutil.copy(f, name)
+                name = os.path.join(random_path, os.path.basename(rawfile))
+                shutil.copy(rawfile, name)
             self.file_list.append(name)
 
         if self.file_list != []:
