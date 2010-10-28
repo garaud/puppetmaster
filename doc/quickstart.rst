@@ -55,6 +55,13 @@ Host
     >>> host.GetTotalMemory()
     4025246
 
+  If the SSH connection fails, the attribute ``connection`` is set to
+  ``False``::
+
+    >>> wrong_host = Host('fake')
+    >>> wrong_host.connection
+    False
+
 
 .. _network:
 
@@ -98,13 +105,20 @@ Network
   the `threading <http://docs.python.org/library/threading.html>`_ Python
   module.
 
-  If the SSH connection fails, a warning message is displayed::
-
-    WARNING: The connection to the host 'stuff' failed.
-
   Do::
 
     >>> net.GetProcessorNumber()
     [('keats', 3), ('whitman', 4), ('dickinson', 4), ('wilde', 8)]
 
   to have the CPUs number for each host.
+
+  Maybe you would like to know the available host according to the number of
+  cores for each host and the load averages. The following method return the
+  names of available hosts and the number of programs that you can launch on
+  it. It supposes that you have one program for one core.
+
+    >>> net.GetAvailableHost()
+    [('keats', 1), ('dickinson', 4), ('wilde', 6)]
+
+  As you can see, ``whitman`` is too busy. You can launch several programs on
+  the other remote hosts.
