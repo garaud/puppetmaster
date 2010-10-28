@@ -127,36 +127,49 @@ class Network:
             self.hosts = [host.Host(socket.gethostname())]
         # A list of hosts (name or instance).
         elif isinstance(host_list, list):
-            if len(host_list) == 0:
-                raise ValueError, "The hosts list is empty."
-            if isinstance(host_list[0], str):
-                self.GetThreadHost(host_list, forced_ssh_config)
-            elif isinstance(host_list[0], host.Host):
-                for instance in host_list:
-                    self.hosts.append(instance)
-            else:
-                raise ValueError, "The element of the list must be " \
-                    + " host names (str) or host instances (host.Host)."
+            self.CheckArgumentHostList(host_list, forced_ssh_config)
         # A file with the list of host names
         elif isinstance(host_list, str):
-            if os.path.isfile(host_list):
-                file = open(host_list, 'r')
-                out = file.readlines()
-                file.close()
-                if len(out) == 0:
-                    raise ValueError, "The file '%s' is empty." % host_list
-                host_list = []
-                for hostname in out:
-                    host_list.append(hostname.strip())
-                self.GetThreadHost(host_list, forced_ssh_config)
-            else:
-                raise ValueError, "The file '%s' not found." % host_list
+            self.CheckArgumentHostFile(host_list, forced_ssh_config)
         else:
             raise ValueError, "The argument must be a list of hosts" \
                 + " or a file."
 
 
-    def SetHostList(self, host_list):
+    def CheckArgumentHostList(self, host_list, forced_ssh_config):
+        """Checks the main argument if it is a list of hosts.
+        """
+        if len(host_list) == 0:
+            raise ValueError, "The hosts list is empty."
+        if isinstance(host_list[0], str):
+            self.GetThreadHost(host_list, forced_ssh_config)
+        elif isinstance(host_list[0], host.Host):
+            for instance in host_list:
+                self.hosts.append(instance)
+        else:
+            raise ValueError, "The element of the list must be " \
+                + " host names (str) or host instances (host.Host)."
+
+
+    def CheckArgumentHostFile(self, host_list, forced_ssh_config):
+        """Checks the main argument if it is a file.
+        """
+        if os.path.isfile(host_list):
+            # Reading.
+            hostfile = open(host_list, 'r')
+            out = hostfile.readlines()
+            hostfile.close()
+            if len(out) == 0:
+                raise ValueError, "The file '%s' is empty." % host_list
+            host_list = []
+            # Loop on host names in the file.
+            for hostname in out:
+                host_list.append(hostname.strip())
+            self.GetThreadHost(host_list, forced_ssh_config)
+        else:
+            raise ValueError, "The file '%s' not found." % host_list
+
+
     def SetHostList(self, host_list, forced_ssh_config):
         """Sets a new list of hosts.
         \param host_list A list of host instances, host names or a file.
