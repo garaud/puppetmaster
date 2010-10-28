@@ -427,14 +427,14 @@ class Network:
         \param toaddr The email address of the recipient.
         \param msg The message.
         """
-        from email.MIMEText import MIMEText
-        msg = MIMEText(msg)
-        msg['Subject'] = subject
-        msg['From'] = fromaddr
-        msg['To'] = toaddr
         import smtplib
+        from email.mime.text import MIMEText
+        message = MIMEText(msg)
+        message['Subject'] = subject
+        message['From'] = fromaddr
+        message['To'] = toaddr
         server = smtplib.SMTP('localhost')
-        server.sendmail(fromaddr, toaddr, msg.as_string())
+        server.sendmail(fromaddr, toaddr, message.as_string())
         server.quit()
 
 
@@ -447,26 +447,25 @@ class Network:
         \param toaddr The email address of the recipient.
         \param msg The message.
         """
-        from email.MIMEMultipart import MIMEMultipart
-        from email.MIMEText import MIMEText
-        tmp = MIMEMultipart()
-        tmp.attach(MIMEText(msg))
-        msg = tmp
-        msg['Subject'] = subject
-        msg['From'] = fromaddr
-        msg['To'] = toaddr
+        import smtplib
+        from email.mime.multipart import MIMEMultipart
+        from email.mime.text import MIMEText
+        message = MIMEMultipart()
+        message.attach(MIMEText(msg))
+        message['Subject'] = subject
+        message['From'] = fromaddr
+        message['To'] = toaddr
         if type(attachments) == types.StringType:
-            file = open(attachments, 'rb')
-            msg.attach(MIMEText(file.read()))
-            file.close()
+            attach_file = open(attachments, 'rb')
+            message.attach(MIMEText(attach_file.read()))
+            attach_file.close()
         else:
             for attachment in attachments:
-                file = open(attachment, 'rb')
-                msg.attach(MIMEText(file.read()))
-                file.close()
-        import smtplib
+                attach_file = open(attachment, 'rb')
+                message.attach(MIMEText(attach_file.read()))
+                attach_file.close()
         server = smtplib.SMTP('localhost')
-        server.sendmail(fromaddr, toaddr, msg.as_string())
+        server.sendmail(fromaddr, toaddr, message.as_string())
         server.quit()
 
 
