@@ -34,7 +34,7 @@ import subprocess
 
 
 ## It may be written in a temporary SSH configuration file.
-_sshconfig_ = """
+__sshconfig__ = """
 Host *
 ForwardAgent yes
 HashKnownHosts yes
@@ -55,7 +55,7 @@ class Host:
         Initializes the attributes and checks the SSH connection to the host.
         ``host`` The name of the host.
         ``forced_ssh_config`` Would like to use the PuppetMaster SSH
-        configuration? (True or False). See the variable ``_sshconfig_``.
+        configuration? (True or False). See the variable ``__sshconfig__``.
         """
 
         ## Name of the host.
@@ -74,9 +74,9 @@ class Host:
         self.ssh = "ssh "
         if forced_ssh_config:
             if not os.path.isfile('/tmp/ssh-config-puppet'):
-                file = open('/tmp/ssh-config-puppet', 'w')
-                file.writelines(_sshconfig_)
-                file.close()
+                ssh_file = open('/tmp/ssh-config-puppet', 'w')
+                ssh_file.writelines(__sshconfig__)
+                ssh_file.close()
             self.ssh = "ssh -F /tmp/ssh-config-puppet "
 
         # Checks type argument.
@@ -87,13 +87,13 @@ class Host:
             self.CheckSSH()
         except SystemError:
             if not os.path.isfile('/tmp/ssh-config-puppet'):
-                file = open('/tmp/ssh-config-puppet', 'w')
-                file.writelines(_sshconfig_)
-                file.close()
+                ssh_file = open('/tmp/ssh-config-puppet', 'w')
+                ssh_file.writelines(__sshconfig__)
+                ssh_file.close()
             self.ssh = "ssh -F /tmp/ssh-config-puppet "
             try:
                 self.CheckSSH()
-            except:
+            except SystemError:
                 self.connection = False
 
         if self.connection:
@@ -122,40 +122,35 @@ class Host:
         # Argument is a string.
         if isinstance(host, str):
             self.name = host
-        # Argument is a tuple (hostname, Nprocessor).
-        elif isinstance(host, tuple):
-            if len(host) != 2:
-                raise ValueError, "The length of the tuple must be 2."
-            if isinstance(host[0], str):
-                self.name = host[0]
-            else:
-                raise ValueError, "The first element must be " \
-                    + "the host name (str)."
-            if not isinstance(host[-1], int) or host[-1] < 0:
-                raise ValueError, "The number of processors must be " \
-                    + "an integer strictly positive."
-            else:
-                self.Nprocessor = host[-1]
-        # Argument is a list (hostname, Nprocessor).
-        elif isinstance(host, list):
-            if len(host) != 2:
-                raise ValueError, "The length of the list must be 2."
-            if isinstance(host[0], str):
-                self.name = host[0]
-            else:
-                raise ValueError, "The first element must be " \
-                    + "the host name (str)."
-            if not isinstance(host[-1], int) or host[-1] < 0:
-                raise ValueError, "The number of processors must be " \
-                    + "an integer strictly positive."
-            else:
-                self.Nprocessor = host[-1]
+        # Argument is a tuple or a list (hostname, Nprocessor).
+        elif isinstance(host, tuple) or isinstance(host, list):
+            self.CheckArgumentTupleList(host)
         else:
             raise ValueError, "The argument must be the host name (str)" \
                 + ", a tuple (hostname, Ncpu) or a list [hostname, Ncpu]."
         # If the host name is empty.
         if len(self.name) == 0:
             raise ValueError, "The name of host is empty."
+
+
+    def CheckArgumentTupleList(self, host):
+        """Checks the length and the content of the tuple/list ``host``.
+        """
+        # Length of tuple or list must be 2.
+        if len(host) != 2:
+            raise ValueError, "The length of the tuple/list must be 2."
+        # You must have ('hostname', CPU_number).
+        if isinstance(host[0], str):
+            self.name = host[0]
+        else:
+            raise ValueError, "The first element must be " \
+                + "the host name (str)."
+        # Number of cores must be a positive integer.
+        if not isinstance(host[-1], int) or host[-1] < 0:
+            raise ValueError, "The number of processors must be " \
+                + "an integer strictly positive."
+        else:
+            self.Nprocessor = host[-1]
 
 
     def CheckSSH(self):
@@ -190,7 +185,11 @@ class Host:
                 # The command must be returned a non-zero status and a single
                 # line.
                 if status != 0 or len(out.split('\n')) != 1:
-                    self.RaiseErrorCommand(command_name, status, out)
+                    print("The command '%s' returns the status '%i'" %
+                          (command_name, status))
+                    print("with the message:")
+                    print("%s" % out)
+                    sys.exit(0)
                 self.Nprocessor = int(out)
             else:
                 try:
@@ -220,7 +219,11 @@ class Host:
                 # The command must be returned a non-zero status and a single
                 # line.
                 if status != 0 or len(out.split('\n')) != 1:
-                    self.RaiseErrorCommand(command_name, status, out)
+                    print("The command '%s' returns the status '%i'" %
+                          (command_name, status))
+                    print("with the message:")
+                    print("%s" % out)
+                    sys.exit(0)
                 self.total_memory = int(out.split()[0])
                 return self.total_memory
             else:
@@ -248,7 +251,11 @@ class Host:
             # The command must be returned a non-zero status and a single
             # line.
             if status != 0 or len(out.split('\n')) != 1:
-                self.RaiseErrorCommand(command_name, status, out)
+                print("The command '%s' returns the status '%i'" %
+                      (command_name, status))
+                print("with the message:")
+                print("%s" % out)
+                sys.exit(0)
             try:
                 out = out.split()
                 out = [float(x.strip(",")) for x in out[-3:]]
@@ -284,7 +291,11 @@ class Host:
             status, out = commands.getstatusoutput(command_name)
             # The command must be returned a non-zero status.
             if status != 0:
-                self.RaiseErrorCommand(command_name, status, out)
+                print("The command '%s' returns the status '%i'" %
+                      (command_name, status))
+                print("with the message:")
+                print("%s" % out)
+                sys.exit(0)
             try:
                 out = out.split('\n')[2]
                 out = int(out.split()[0])
@@ -308,16 +319,6 @@ class Host:
                 # Connection failed?
                 out = "off"
             return out
-
-
-    def RaiseErrorCommand(self, command_name, status, out):
-        """Throws an exit message.
-        """
-        print("The command '%s' returns the status '%i'" %
-              (command_name, status))
-        print("with the message:")
-        print("%s" % out)
-        sys.exit(0)
 
 
     def LaunchInt(self, command):
@@ -381,8 +382,8 @@ class Host:
                                         stdout = subprocess.PIPE,
                                         stderr = subprocess.PIPE)
             elif out_option == 'file':
-                fd, filename = tempfile.mkstemp(prefix = 'puppet-'
-                                                + self.name + '-')
+                filename = tempfile.mkstemp(prefix = 'puppet-'
+                                            + self.name + '-')[1]
                 outfile = open(filename, 'w+')
                 return outfile, subprocess.Popen([command], shell = True,
                                                  stdout = outfile,
@@ -400,8 +401,8 @@ class Host:
                                         stdout = subprocess.PIPE,
                                         stderr = subprocess.PIPE)
             elif out_option == 'file':
-                fd, filename = tempfile.mkstemp(prefix = 'puppet-'
-                                                + self.name + '-')
+                filename = tempfile.mkstemp(prefix = 'puppet-'
+                                            + self.name + '-')[1]
                 outfile = open(filename, 'w+')
                 return outfile, subprocess.Popen([self.ssh + self.name
                                                   + ' ' + command],
@@ -437,8 +438,8 @@ class Host:
                                        stdout=subprocess.PIPE,
                                        stderr=subprocess.PIPE)
         # Limit time and waiting time.
-        t = time.time()
-        while (subproc.poll() == None and time.time() - t < ltime):
+        current_time = time.time()
+        while (subproc.poll() == None and time.time() - current_time < ltime):
             time.sleep(wait)
         # If the process is not done, try to kill it.
         if subproc.poll() == None:
