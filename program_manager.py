@@ -683,16 +683,3 @@ class Configuration:
             return " ".join(self.file_list[:self.Narg])
         else:
             raise Exception, "Not ready."
-
-
-if __name__ == "__main__":
-    ## An instance 'program_manager.ProgramManager'.
-    simulation = ProgramManager(Network())
-
-    ## An instance 'program_manager.ProgramManager'.
-    program = Program("/bin/echo", format = " Hello World!")
-    simulation.AddProgram(program)
-
-    simulation.Run()
-
-    print simulation.log
