@@ -125,7 +125,6 @@ class Network:
         # The local host by default.
         if host_list == None:
             self.hosts = [host.Host(socket.gethostname())]
-            pass
         # A list of hosts (name or instance).
         elif isinstance(host_list, list):
             if len(host_list) == 0:
