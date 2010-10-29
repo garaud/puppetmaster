@@ -41,6 +41,7 @@ Table of Contents
 
    getting_started.rst
    quickstart.rst
+   testing.rst
    puppet_module.rst
 
 
