@@ -18,6 +18,18 @@ or::
 
     $> git http://git.gitorious.org/puppetmaster/src.git puppetmaster
 
+You can also download the archive:
+
+  =======  ==========================  =======================
+  Release  TAR                         ZIP
+  =======  ==========================  =======================
+    0.1    `puppetmaster-0.1.tar.gz`_  `puppetmaster-0.1.zip`_
+  =======  ==========================  =======================
+
+.. _puppetmaster-0.1.tar.gz: ./_static/download/puppetmaster-0.1.tar.gz
+.. _puppetmaster-0.1.zip: ./_static/download/puppetmaster-0.1.zip
+
+
 .. _install:
 
 Install
