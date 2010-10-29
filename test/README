@@ -9,7 +9,8 @@ hosts. For instance::
     whitman
     dickinson
 
-You can also add an empty line or a wrong name to see if PuppetMaster can manage these kind of exceptions.
+You can also add an empty line or a wrong name to see if PuppetMaster can
+manage these kind of exceptions.
 
 
 SSH connection and PuppetMaster checking
@@ -19,20 +20,29 @@ Suppose you text file named 'host_file', you can launch::
 
     python remote_hosts_test.py host_file
 
+In case you would like to use PuppetMaster's SSH configuration do::
+
+    python remote_hosts_test.py host_file yes
+
 
 Module testing with unittest
 ----------------------------
 
-To launch all tests, do::
+To launch all tests where ``host_file`` is the file where there are host
+names, do::
 
-    python tests.py -f 'host_file'
+    python tests.py -f host_file
 
-If you would like to check one of the 3 modules:
+If you would like to check one of these 3 modules:
 
-  - host
-  - network
-  - program_manager
+  - ``host``
+  - ``network``
+  - ``program_manager``
 
 you can do::
 
-    python tests.py -f 'host_file' -m MODULE_NAME
+    python tests.py -f host_file -m MODULE_NAME
+
+In case you would like to use PuppetMaster's SSH configuration do::
+
+    python tests.py -f host_file --force-ssh-config
