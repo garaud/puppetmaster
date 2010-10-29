@@ -112,7 +112,7 @@ Network
 
   to have the CPUs number for each host.
 
-  Maybe you would like to know the available host according to the number of
+  Maybe you would like to know the available hosts according to the number of
   cores for each host and the load averages. The following method return the
   names of available hosts and the number of programs that you can launch on
   it. It supposes that you have one program for one core.
