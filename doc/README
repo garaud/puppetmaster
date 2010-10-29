@@ -19,7 +19,7 @@ To generate documentation do::
 
 or::
 
-    make latexpdf
+    make latex
 
 Then, see in ``doc/_build/html`` or ``doc/_build/latex`` subdirectories and
 read documentation opening ``index.html`` or ``PuppetMaster.pdf``.
