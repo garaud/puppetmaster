@@ -63,7 +63,7 @@ parser.add_option("--force-ssh-config", dest="forced_ssh", action="store_true",
 (options, args) = parser.parse_args()
 
 # If the number of arguments is wrong.
-if len(args) >= 3:
+if len(args) >= 1:
     print "Improper usage!"
     print "Use option -h or --help for information about usage."
     sys.exit(1)
