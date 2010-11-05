@@ -16,40 +16,38 @@
 
 import os
 import sys
+import optparse
 
 from puppetmaster import host
 
 
-#############
-# ARGUMENTS #
-#############
+###################
+# OPTIONS PARSING #
+###################
 
-help_message = \
-"""
-Usage:
- python %s [host_file] [forced_ssh_config]
- Checks the connection to each host defined in a file.
+# Parser instance.
+usage = "%prog [options]"
+parser = optparse.OptionParser(usage = usage)
+parser.add_option("-f", "--file",
+                  help="The name of the file where there are the host names."\
+                      + " If it is not given, just tests the local host.",
+                  metavar="FILE")
+parser.add_option("--force-ssh-config", dest="forced_ssh", action="store_true",
+                  default=False,
+                  help="Uses the SSH configuration from PuppetMaster.")
 
-Arguments:
- [host_file]: the file where the host names are defined (one for each line).
- [forced_ssh_config]: uses the SSH configuration from PuppetMaster (optional).
-""" % sys.argv[0]
+(options, args) = parser.parse_args()
 
-if len(sys.argv) == 2:
-    host_file = sys.argv[1]
-    forced_ssh = 'no'
-elif len(sys.argv) == 3:
-    host_file = sys.argv[1]
-    forced_ssh = sys.argv[2]
-else:
-    print help_message
-    sys.exit(0)
+# If the number of arguments is wrong.
+if len(args) >= 1:
+    print "Improper usage!"
+    print "Use option -h or --help for information about usage."
+    sys.exit(1)
 
-if forced_ssh not in ['no', 'yes']:
-    print help_message
-    print "Second argument [forced_ssh_config] must be 'yes' or 'no'."
-    print "'no' by default."
-    sys.exit(0)
+# A file is required.
+if options.file is None:
+    parser.error('A file is required. Please, use the option -f --file.'
+                 + '\n-h --help for help.')
 
 
 ###############
@@ -57,14 +55,8 @@ if forced_ssh not in ['no', 'yes']:
 ###############
 
 # Host file name checking.
-if not os.path.isfile(host_file):
-    raise Exception, "The file '%s' not found." % host_file
-
-# Forces SSH configuration?
-if forced_ssh == 'yes':
-    forced_ssh = True
-else:
-    forced_ssh = False
+if not os.path.isfile(options.file):
+    raise Exception, "The file '%s' not found." % options.file
 
 
 ##############
@@ -72,7 +64,7 @@ else:
 ##############
 
 # Reads the host names.
-f = open(host_file, 'r')
+f = open(options.file, 'r')
 output = f.readlines()
 f.close()
 
@@ -80,7 +72,7 @@ f.close()
 for name in output:
     name = name.strip('\n')
     if len(name) != 0:
-        host_instance = host.Host(name, forced_ssh)
+        host_instance = host.Host(name, options.forced_ssh)
         if host_instance.connection:
             print("%s -- OK" % name)
         else:
