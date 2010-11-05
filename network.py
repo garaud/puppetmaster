@@ -295,7 +295,6 @@ class Network:
         # A loop for every hosts to pick up the number of available cpu.
         for host_ in self.hosts:
             index = [x[0] for x in uptime_list].index(host_.name)
-            average = uptime_list[index][1][0]
             if host_.connection:
                 average = uptime_list[index][1][0]
                 if average < host_.Nprocessor - 0.5:
