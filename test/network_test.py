@@ -203,3 +203,6 @@ class NetworkTestCase(unittest.TestCase):
                 self.assertTrue(popen4_instance.wait() != 0)
                 self.assertTrue(subproc.wait() != 0)
                 self.assertTrue(wait_return[0] != 0)
+
+if __name__ == '__main__':
+    unittest.main()

@@ -166,3 +166,7 @@ class ProgramManagerTestCase(unittest.TestCase):
         self.program_manager.RunNetwork(self.delay)
         self.program_manager.Clear()
         self.assertTrue(len(self.program_manager.program_list) == 0)
+
+
+if __name__ == '__main__':
+    unittest.main()
